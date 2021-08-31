@@ -10,6 +10,11 @@ const { typeDefs, resolvers } = require("./src/schema");
 
 const datasources = require("./src/datasource");
 
+const fs = require("fs");
+
+const path = require("path");
+
+const { NodeSSH } = require("node-ssh");
 // initialize app
 const app = express();
 
@@ -32,6 +37,30 @@ app.use((req, res, next) => {
 
 // connect to database
 
+const ssh = new NodeSSH();
+
+ssh
+  .connect({
+    host: "localhost",
+    username: "steel",
+    privateKey: fs.readFileSync("/home/steel/.ssh/id_rsa", "utf8"),
+  })
+  .then(function () {
+    ssh
+      .putFile(
+        "/home/dokku/Lab/localPath/fileName",
+        "/home/dokku/Lab/remotePath/fileName"
+      )
+      .then(
+        function () {
+          console.log("done");
+        },
+        function (error) {
+          console.log("Something's wrong");
+          console.log(error);
+        }
+      );
+  });
 
 const pubsub = new PubSub();
 
@@ -65,10 +94,8 @@ server.installSubscriptionHandlers(httpServer);
 // initialize server port
 const PORT = process.env.PORT || 2000;
 
-
 httpServer.listen(PORT, () =>
   console.log(`🚀 Server is ready at port ${PORT}`)
- 
 );
 
 console.log(
