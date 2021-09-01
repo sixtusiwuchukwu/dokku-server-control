@@ -1,23 +1,22 @@
+require('dotenv').config()
 const http = require("http");
-
 const express = require("express");
-
-const mongoose = require("mongoose");
-
 const { ApolloServer, PubSub } = require("apollo-server-express");
-
+const db = require( './src/db/index' );
 const { typeDefs, resolvers } = require("./src/schema");
-
+const formatError = require('./src/helper/formatError')
 const datasources = require("./src/datasource");
 
 const fs = require("fs");
 
 const path = require("path");
 
-const { NodeSSH } = require("node-ssh");
+const {MONGO_URL,DOKKU_MONGO_AQUA_URL} = require("./src/tools/config");
+new db( console ).connect( MONGO_URL || DOKKU_MONGO_AQUA_URL );
+
 // initialize app
 const app = express();
-
+const homedir = require('os').homedir();
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -37,36 +36,15 @@ app.use((req, res, next) => {
 
 // connect to database
 
-const ssh = new NodeSSH();
 
-ssh
-  .connect({
-    host: "localhost",
-    username: "steel",
-    privateKey: fs.readFileSync("/home/steel/.ssh/id_rsa", "utf8"),
-  })
-  .then(function () {
-    ssh
-      .putFile(
-        "/home/dokku/Lab/localPath/fileName",
-        "/home/dokku/Lab/remotePath/fileName"
-      )
-      .then(
-        function () {
-          console.log("done");
-        },
-        function (error) {
-          console.log("Something's wrong");
-          console.log(error);
-        }
-      );
-  });
+
 
 const pubsub = new PubSub();
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  formatError: formatError(console),
   subscriptions: {
     onConnect: () => console.log("websocket connected"),
     onDisconnect: () => console.log("websocket disconnected"),

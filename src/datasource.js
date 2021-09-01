@@ -1,8 +1,8 @@
-const Post = require("./services/post/datasource");
+const Server = require("./services/Servers/datasource");
 
 const User = require("./services/user/datasource");
 
 module.exports = {
-  Post,
+  Server,
   User,
 };

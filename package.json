@@ -6,9 +6,6 @@
   "scripts": {
     "start": "nodemon index.js"
   },
-  "engines": {
-    "node": "^v10.19.0"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -16,7 +13,10 @@
     "apollo-server-express": "^2.16.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "graphql-iso-date": "^3.6.1",
+    "graphql-type-json": "^0.3.2",
     "mongoose": "^5.9.25",
+    "mongoose-paginate-v2": "^1.4.2",
     "node-ssh": "^12.0.0",
     "nodemon": "^2.0.4",
     "subscriptions-transport-ws": "^0.9.17",

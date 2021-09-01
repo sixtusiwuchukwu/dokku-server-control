@@ -4,21 +4,21 @@ const {
 } = require("../src/services/user/resolver");
 
 const {
-  PostMutaion,
-  PostQuery,
-  PostSubscription,
-} = require("../src/services/post/resolver");
+  ServerQuery,
+  ServerMutations,
+  ServerSubscription,
+} = require("./services/Servers/resolver");
 
 const Mutation = {
   ...UserMutaion,
-  ...PostMutaion,
+  ...ServerMutations,
 };
 const Query = {
-  ...PostQuery,
+  ...ServerQuery,
 };
 const Subscription = {
   ...UserSubscription,
-  ...PostSubscription,
+  ...ServerSubscription,
 };
 
 module.exports = {
