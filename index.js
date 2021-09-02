@@ -14,9 +14,46 @@ const path = require("path");
 const {MONGO_URL,DOKKU_MONGO_AQUA_URL} = require("./src/tools/config");
 new db( console ).connect( MONGO_URL || DOKKU_MONGO_AQUA_URL );
 
+const { readFileSync } = require('fs');
+
+const { Client } = require('ssh2');
+
+
 // initialize app
 const app = express();
 const homedir = require('os').homedir();
+// const conn = new Client();
+// conn.on('ready', () => {
+//   console.log('Client :: ready');
+//   conn.shell((err, stream) => {
+//     if (err) throw err;
+//     stream.on('close', () => {
+//       console.log('Stream :: close');
+//       conn.end();
+//     }).on('data', (data) => {
+//       console.log(data.toString('utf8'));
+//     });
+//     setTimeout(()=>{
+//       stream.write('\nls -a \n');
+//     },2000)
+//
+//     // stream.write('ls -a');
+//     // stream.write('ls -a');
+//
+//   });
+// }).connect({
+//   host: 'verydeeptech.com',
+//   port: 22,
+//   username: 'root',
+//   privateKey: readFileSync(path.join(homedir, '.ssh','id_rsa'))
+// });
+
+// setTimeout(()=>{
+//   conn.exec('ls -a',{}, (e,j)=>{
+//     console.log(e,j)
+//   })
+//   // stream.end('ls -a');
+// },10000)
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
