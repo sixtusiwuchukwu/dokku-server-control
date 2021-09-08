@@ -3,6 +3,7 @@ const { gql } = require("apollo-server-express");
 const PostTypes = gql`
   extend type Mutation {
     addServer(data: serverInput): String!
+    stopServer(_id: ID!): String!
   }
 
   extend type Query {

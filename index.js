@@ -42,18 +42,19 @@ const homedir = require('os').homedir();
 //
 //   });
 // }).connect({
-//   host: 'verydeeptech.com',
+//   host: 'ec2-54-211-206-26.compute-1.amazonaws.com',
 //   port: 22,
-//   username: 'root',
-//   privateKey: readFileSync(path.join(homedir, '.ssh','id_rsa'))
+//   username: 'ubuntu',
+//   privateKey: readFileSync(path.join('deeptech.pem'))
+//   // privateKey: readFileSync(path.join(homedir, '.ssh','id_rsa'))
 // });
 
-// setTimeout(()=>{
-//   conn.exec('ls -a',{}, (e,j)=>{
-//     console.log(e,j)
-//   })
-//   // stream.end('ls -a');
-// },10000)
+setTimeout(()=>{
+  conn.exec('ls -a',{}, (e,j)=>{
+    console.log(e,j)
+  })
+  // stream.end('ls -a');
+},10000)
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
