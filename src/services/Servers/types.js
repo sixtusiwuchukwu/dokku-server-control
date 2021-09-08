@@ -32,6 +32,7 @@ const PostTypes = gql`
       host: String!
       ServerName: String!
       pkey: String!
+      port: Int!
   }
 
   extend type Subscription {
