@@ -1,7 +1,6 @@
 const __Server = require("../../models/servers/servers");
 const { UserInputError } = require("apollo-server-express");
-const Base,
-  { ssh } = require("../../../base");
+const Base = require("../../../base");
 
 class ServerDatasource extends Base {
   async listServers({ search, page }) {
@@ -33,11 +32,7 @@ class ServerDatasource extends Base {
           `Cannot verify server credentials for ${data.host}`
         );
       }
-      if (
-        e.name === "Error" ||
-        e.name === "TypeError" ||
-        e.name === "ReferenceError"
-      ) {
+      if (  e.name === "Error" ||  e.name === "TypeError" ||   e.name === "ReferenceError"  ) {
         console.log(e);
         throw new UserInputError(
           "Unable to complete server setup contact support"
@@ -46,7 +41,7 @@ class ServerDatasource extends Base {
       throw new UserInputError(e.message);
     }
   }
-  async StopServer(data) {
+  async stopServer(data) {
     try {
       const { _id } = data;
 
@@ -55,22 +50,18 @@ class ServerDatasource extends Base {
       if (!FoundServer) {
         throw new UserInputError("Unable to stop server");
       }
-      const { host } = FoundServer;
+      const { host, username, pkey } = FoundServer;
 
       await this.RemoteServer(host, username, pkey);
 
-      await ssh.execCommand(`dokku ps:stop${host}`);
+      await this.RemoteServer.execCommand(`dokku ps:stop${host}`);
     } catch (e) {
       if (e.message.includes("authentication methods failed")) {
         throw new UserInputError(
           `Cannot verify server credentials for ${data.host}`
         );
       }
-      if (
-        e.name === "Error" ||
-        e.name === "TypeError" ||
-        e.name === "ReferenceError"
-      ) {
+      if ( e.name === "Error" ||  e.name === "TypeError" ||  e.name === "ReferenceError" ) {
         console.log(e);
         throw new UserInputError(
           "Unable to complete server setup contact support"
@@ -82,7 +73,6 @@ class ServerDatasource extends Base {
 
   async StartServer(data) {
     const { _id } = data;
-
     let FoundServer = await __Server.findOne({ _id });
 
     if (!FoundServer) {
@@ -92,7 +82,7 @@ class ServerDatasource extends Base {
 
     await this.RemoteServer(host, username, pkey);
 
-    await ssh.execCommand(`dokku ps:start${host}`);
+    await this.RemoteServer.execCommand(`dokku ps:start${host}`);
   }
 }
 

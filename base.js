@@ -4,7 +4,7 @@ const path = require("path");
 
 class Base {
   RemoteServer(host = "", username = "", pkey = "") {
-    export const ssh = new NodeSSH();
+     const ssh = new NodeSSH();
     return ssh.connect({
       host,
       username,

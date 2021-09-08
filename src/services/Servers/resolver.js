@@ -12,6 +12,10 @@ const ServerMutations = {
     const { Server } = datasources;
     return await new Server().addServer(data);
   },
+  stopServer: async (root,  data , { datasources, pubsub }) => {
+    const { Server } = datasources;
+    return await new Server().stopServer(data);
+  },
 };
 
 const ServerSubscription = {
