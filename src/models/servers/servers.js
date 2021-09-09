@@ -5,6 +5,10 @@ const ServesSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  port: {
+    type: Number,
+    required: true
+  },
   host: {
     type: String,
     required: true,
