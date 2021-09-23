@@ -1,16 +1,16 @@
-const {
-  UserMutaion,
+import {
+  UserMutation,
   UserSubscription,
-} = require("../src/services/user/resolver");
+} from "./services/user/resolver";
 
-const {
+import {
   ServerQuery,
   ServerMutations,
   ServerSubscription,
-} = require("./services/Servers/resolver");
+} from "./services/Servers/resolver";
 
 const Mutation = {
-  ...UserMutaion,
+  ...UserMutation,
   ...ServerMutations,
 };
 const Query = {
@@ -21,7 +21,7 @@ const Subscription = {
   ...ServerSubscription,
 };
 
-module.exports = {
+export {
   Mutation,
   Query,
   Subscription,

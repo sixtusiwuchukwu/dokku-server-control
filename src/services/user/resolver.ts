@@ -1,9 +1,9 @@
-const { PubSub } = require("apollo-server-express");
+import { PubSub } from "apollo-server-express";
 const pubsub = new PubSub();
 
 const NEW_USER = "NEWUSER";
-const UserMutaion = {
-  joingroup: async (root, { data }, { datasources }) => {
+const UserMutation = {
+  joingroup: async (root:any, { data }:{data:any}, { datasources }: {datasources:{User:any}}) => {
     const { User } = datasources;
     const newuser = await new User().joinGroup(data);
     await pubsub.publish(NEW_USER, { newUser: newuser });
@@ -13,10 +13,10 @@ const UserMutaion = {
 
 const UserSubscription = {
   newUser: {
-    subscribe: async (root, args, context) => {
+    subscribe: async (root:any, args:any, context:any) => {
       return await pubsub.asyncIterator(NEW_USER);
     },
   },
 };
 
-module.exports = { UserMutaion, UserSubscription };
+export { UserMutation, UserSubscription };

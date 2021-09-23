@@ -1,11 +1,17 @@
+import {IAddServerInterface, IListServersInterface} from "../../interfaces/DataSources/server";
+
 const __Server = require("../../models/servers/servers");
 const { UserInputError } = require("apollo-server-express");
 const Base = require("../../../base");
 
 class ServerDatasource extends Base {
-  async listServers({ search, page }) {
-    const query = {};
+  constructor(props:any) {
+    super(props);
+  }
+  async listServers({ search , page }: IListServersInterface) {
+    const query = {} ;
     if (search) {
+      // @ts-ignore
       query["serverName"] = { $regex: search, $options: "ig" };
     }
     const options = {
@@ -20,10 +26,10 @@ class ServerDatasource extends Base {
 
     return await __Server.paginate({ ...query }, options);
   }
-  async addServer(data) {
+  async addServer(data: IAddServerInterface) {
     try {
-      const { username, host, pkey } = data;
-      await this.RemoteServer(host, username, pkey);
+      const { username, host, pkey, port } = data;
+      await this.RemoteServer(host, username, pkey, port);
       await __Server.create(data);
       return "New server Added";
     } catch (e) {
@@ -41,24 +47,20 @@ class ServerDatasource extends Base {
       throw new UserInputError(e.message);
     }
   }
-  async stopServer(data) {
+  async stopServer(data:{_id: string}) {
+    let FoundServer = await __Server.findById( data._id );
+
+    if (!FoundServer) {
+      throw new UserInputError("Unable to stop server");
+    }
+    const { host, username, pkey } = FoundServer;
     try {
-      const { _id } = data;
-
-      let FoundServer = await __Server.findOne({ _id });
-
-      if (!FoundServer) {
-        throw new UserInputError("Unable to stop server");
-      }
-      const { host, username, pkey } = FoundServer;
-
       await this.RemoteServer(host, username, pkey);
-
       await this.RemoteServer.execCommand(`dokku ps:stop${host}`);
     } catch (e) {
       if (e.message.includes("authentication methods failed")) {
         throw new UserInputError(
-          `Cannot verify server credentials for ${data.host}`
+          `Cannot verify server credentials for ${host}`
         );
       }
       if ( e.name === "Error" ||  e.name === "TypeError" ||  e.name === "ReferenceError" ) {
@@ -71,7 +73,7 @@ class ServerDatasource extends Base {
     }
   }
 
-  async StartServer(data) {
+  async StartServer(data: { _id: string }) {
     const { _id } = data;
     let FoundServer = await __Server.findOne({ _id });
 

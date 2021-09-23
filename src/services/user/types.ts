@@ -1,4 +1,4 @@
-const { gql } = require("apollo-server-express");
+import {gql} from "apollo-server-express";
 
 const UserTypes = gql`
   extend type Mutation {
@@ -19,4 +19,4 @@ const UserTypes = gql`
   }
 `;
 
-module.exports = UserTypes;
+export default  UserTypes;
