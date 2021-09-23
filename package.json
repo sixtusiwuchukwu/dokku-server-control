@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "node index.ts",
-    "dev": "ts-node-dev --respawn --notify --rs index.ts"
+    "dev": "nodemon index.ts"
   },
   "keywords": [],
   "author": "",
