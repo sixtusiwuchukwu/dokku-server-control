@@ -1,18 +1,16 @@
 require('dotenv').config()
-const http = require("http");
-const express = require("express");
-const { ApolloServer, PubSub } = require("apollo-server-express");
-const db = require( './src/db/index' );
-const { typeDefs, resolvers } = require("./src/schema");
-const formatError = require('./src/helper/formatError')
-const datasources = require("./src/datasource");
+import * as http from "http";
+// @ts-ignore
+import express, {Request, Response,NextFunction, Application} from 'express'
+import { ApolloServer, PubSub } from "apollo-server-express";
+import  db  from './src/db' ;
+import { typeDefs, resolvers } from "./src/schema";
+import formatError from './src/helper/formatError';
+import dataSources from "./src/datasource";
 
-const fs = require("fs");
-
-const path = require("path");
 
 const {MONGO_URL,DOKKU_MONGO_AQUA_URL} = require("./src/tools/config");
-new db( console ).connect( MONGO_URL || DOKKU_MONGO_AQUA_URL );
+new db( console, null ).connect( MONGO_URL || DOKKU_MONGO_AQUA_URL );
 
 const { readFileSync } = require('fs');
 
@@ -20,7 +18,7 @@ const { Client } = require('ssh2');
 
 
 // initialize app
-const app = express();
+const app:Application = express();
 const homedir = require('os').homedir();
 // const conn = new Client();
 // conn.on('ready', () => {
@@ -55,7 +53,7 @@ const homedir = require('os').homedir();
 //   })
 //   // stream.end('ls -a');
 // },10000)
-app.use((req, res, next) => {
+app.use((req:Request, res:Response, next: NextFunction) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
@@ -77,21 +75,21 @@ app.use((req, res, next) => {
 
 
 
-const pubsub = new PubSub();
+const pubsub:any = new PubSub();
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  formatError: formatError(console),
+  formatError,
   subscriptions: {
-    onConnect: () => console.log("websocket connected"),
-    onDisconnect: () => console.log("websocket disconnected"),
+    onConnect: ():any => console.log("websocket connected"),
+    onDisconnect: ():any => console.log("websocket disconnected"),
   },
   context: ({ req, res }) => ({
     req,
     res,
     pubsub,
-    datasources,
+    datasources:dataSources,
     engine: {
       reportSchema: true,
     },
@@ -104,14 +102,14 @@ const server = new ApolloServer({
 
 server.applyMiddleware({ app, path: "/" });
 
-const httpServer = http.createServer(app);
+const httpServer: any = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
 // initialize server port
 const PORT = process.env.PORT || 2000;
 
-httpServer.listen(PORT, () =>
-  console.log(`🚀 Server is ready at port ${PORT}`)
+httpServer.listen(PORT, ():void =>
+  console.log(`🚀 Server is ready at port http://localhost:${PORT}`)
 );
 
 console.log(

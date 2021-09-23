@@ -1,9 +1,12 @@
-const User = require("../../models/user/index");
+const User = require("../../models/user");
 
 class Userdatasource {
-  async joinGroup(data) {
+  async joinGroup(data:any) {
     const newUser = await User.create(data);
     return newUser;
+  }
+  async isLoggedIn() {
+
   }
 }
 

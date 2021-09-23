@@ -1,9 +1,15 @@
-const mongoose = require("mongoose");
+import {Schema, model, plugin} from 'mongoose'
+import {IServers} from "../../interfaces/datebaseInterface/mongo";
 const mongoosePaginate = require( 'mongoose-paginate-v2' );
-const ServesSchema = new mongoose.Schema({
+
+const ServesSchema = new Schema<IServers>({
   username: {
     type: String,
     required: true,
+  },
+  addedBy: {
+    type: Schema.Types.ObjectId,
+    required: true
   },
   port: {
     type: Number,
@@ -24,5 +30,5 @@ const ServesSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
-mongoose.plugin( mongoosePaginate )
-module.exports = mongoose.model("server", ServesSchema);
+plugin( mongoosePaginate )
+module.exports = model<IServers>("server", ServesSchema);

@@ -11,7 +11,9 @@ const options = {
 };
 
 class db {
-  constructor( log , dataBaseDefaultSaves ) {
+  private readonly log: any;
+  private dataBaseDefaultSaves: any;
+  constructor( log:any , dataBaseDefaultSaves: any ) {
     // if ( !dataBaseDefaultSaves ) {
     //   throw new Error( `dataBaseDefaultSaves undefined in ${ __dirname }` )
     // }
@@ -20,21 +22,19 @@ class db {
     this.log = log
   }
 
-  connect( DB_URL ) {
+  public connect( DB_URL: string ) {
     const log = this.log;
     mongoose.connect( DB_URL , options )
       .then( async () => {
         log.info( `Successfully connected to ${ DB_URL }` );
         // new this.dataBaseDefaultSaves( log , { email : "nwokolawrence6@gmail.com" , phone : "08106720418" } )
       } )
-      .catch( ( err ) => {
+      .catch( ( err:any ) => {
         log.error( `There was a db connection error ${ err }` );
         process.exit( 0 );
       } );
     mongoose.set( 'useCreateIndex' , true );
-    const db = mongoose.connection;
-
-    db.once( 'disconnected' , () => {
+    mongoose.connection.once( 'disconnected' , () => {
       log.error( `Successfully disconnected from ${ DB_URL }` );
     } );
     process.on( 'SIGINT' , () => {
@@ -46,4 +46,4 @@ class db {
   }
 }
 
-module.exports = db;
+export default db;

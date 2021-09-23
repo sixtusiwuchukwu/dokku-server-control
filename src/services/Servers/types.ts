@@ -40,4 +40,4 @@ const PostTypes = gql`
   }
 `;
 
-module.exports = PostTypes;
+export default PostTypes;
