@@ -6,6 +6,10 @@ import PostSchema from "./services/Servers/types";
 const linkSchemas = gql`
     scalar DateTime
     scalar JSON
+    enum accountType {
+        admin,
+        user
+    }
   type Mutation {
     _: Boolean
   }

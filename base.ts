@@ -4,11 +4,11 @@ const ids = require('short-id');
 import { Model } from 'mongoose';
 // const
 class Base {
-  constructor(params:any) {
-   if(!params) throw new Error('Permissions for operations not defined kindly')
+  constructor(params:Array<string>) {
+   if(!params) throw new Error('Permissions for operations not defined kindly do that')
 
   }
-  RemoteServer(host: string, username: string, pkey: string, port: number):Promise<void> {
+  RemoteServer(host: string, username: string, pkey: string, port: number = 22):Promise<void> {
     const ssh:Config = new NodeSSH();
     return ssh.connect({
       host,
@@ -17,7 +17,7 @@ class Base {
       privateKey: pkey,
     });
   }
-  async getCodeNumber(name: string, model: Model<any>, objectName: string) {
+  async getCodeNumber(name: string, model: Model<any>, objectName: string = "code") {
     let code;
     let codeCheck;
     do {
@@ -28,4 +28,4 @@ class Base {
     return `${name}${code}`;
   }
 }
-module.exports = Base;
+export default Base;

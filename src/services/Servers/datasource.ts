@@ -2,7 +2,7 @@ import {IAddServerInterface, IListServersInterface} from "../../interfaces/DataS
 
 const __Server = require("../../models/servers/servers");
 const { UserInputError } = require("apollo-server-express");
-const Base = require("../../../base");
+import Base from '../../../base';
 
 class ServerDatasource extends Base {
   constructor(props:any) {
@@ -55,7 +55,8 @@ class ServerDatasource extends Base {
     }
     const { host, username, pkey } = FoundServer;
     try {
-      await this.RemoteServer(host, username, pkey);
+      const Server = await this.RemoteServer(host, username, pkey);
+      // @ts-ignore
       await this.RemoteServer.execCommand(`dokku ps:stop${host}`);
     } catch (e) {
       if (e.message.includes("authentication methods failed")) {
@@ -84,8 +85,9 @@ class ServerDatasource extends Base {
 
     await this.RemoteServer(host, username, pkey);
 
+    // @ts-ignore
     await this.RemoteServer.execCommand(`dokku ps:start${host}`);
   }
 }
 
-module.exports = ServerDatasource;
+export default ServerDatasource;

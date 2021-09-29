@@ -10,11 +10,11 @@ const ServerQuery = {
 const ServerMutations = {
   addServer: async (root:any, { data }:{data:object}, { datasources }:{datasources:{Server:any}}) => {
     const { Server } = datasources;
-    return await new Server("nh").addServer(data);
+    return await new Server("d").addServer(data);
   },
   stopServer: async (root:any,  data:any , { datasources }:{datasources: any}) => {
     const { Server } = datasources;
-    return await new Server("h").stopServer(data);
+    return await new Server("d").stopServer(data);
   },
 };
 

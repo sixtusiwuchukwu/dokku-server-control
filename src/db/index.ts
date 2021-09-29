@@ -1,5 +1,5 @@
-const mongoose = require( 'mongoose' );
-
+import mongoose from 'mongoose';
+import DefaultScripts from "../../DefaultScripts";
 
 mongoose.set( 'useFindAndModify' , false );
 
@@ -12,22 +12,15 @@ const options = {
 
 class db {
   private readonly log: any;
-  private dataBaseDefaultSaves: any;
-  constructor( log:any , dataBaseDefaultSaves: any ) {
-    // if ( !dataBaseDefaultSaves ) {
-    //   throw new Error( `dataBaseDefaultSaves undefined in ${ __dirname }` )
-    // }
-    // this.defaultAdminUser = "admin@cloudbooks.ng";
-    this.dataBaseDefaultSaves = dataBaseDefaultSaves;
+  constructor( log:any) {
     this.log = log
   }
-
   public connect( DB_URL: string ) {
     const log = this.log;
     mongoose.connect( DB_URL , options )
       .then( async () => {
         log.info( `Successfully connected to ${ DB_URL }` );
-        // new this.dataBaseDefaultSaves( log , { email : "nwokolawrence6@gmail.com" , phone : "08106720418" } )
+        new DefaultScripts();
       } )
       .catch( ( err:any ) => {
         log.error( `There was a db connection error ${ err }` );
