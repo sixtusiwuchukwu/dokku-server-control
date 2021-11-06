@@ -1,24 +1,8 @@
-import {Schema, model} from 'mongoose'
-enum accountType {
-  admin,
-  user
-}
-interface User {
-  username:string
-  code:string
-  email:string
-  firstName: string
-  lastName: string
-  permissions: Array<string>
-  blackListCommands: Array<string>
-  whiteListCommands: Array<string>
-  isBlocked: boolean
-  allowedRoutes: Array<string>
-  accountType: accountType
-  createdAt: Date
-  updatedAt: Date
-}
-const UserSchema = new Schema<User>({
+import {model, Schema} from 'mongoose'
+import {IUser} from "../../interfaces/datebaseInterface/mongo";
+import {randomBytes, scryptSync} from "crypto";
+
+const UserSchema = new Schema<IUser>({
   username: {
     type: String,
     required: true,
@@ -29,6 +13,10 @@ const UserSchema = new Schema<User>({
     type: String,
     unique: true,
     index: true
+  },
+  phone:{
+    type: String,
+    required: true
   },
   email: {
     type: String,
@@ -43,6 +31,10 @@ const UserSchema = new Schema<User>({
     type: String,
     required: true
   },
+  lastReset: {
+    type: String,
+    default: Date.now(),
+  },
   permissions: {
     type: []
   },
@@ -51,6 +43,10 @@ const UserSchema = new Schema<User>({
   },
   whiteListCommands: {
     type: []
+  },
+  password: {
+    required: true,
+    type: String
   },
   isBlocked: {
     type: Boolean,
@@ -71,5 +67,17 @@ const UserSchema = new Schema<User>({
 }, {
   timestamps: true
 });
+UserSchema.statics.comparePassword = async (storedPassword:string, userPassword:string) => {
+  const [key, salt] = storedPassword.split(":")
+   const userPass:string = scryptSync(userPassword, salt, 32).toString("hex")
+   return userPass === key
+};
 
-module.exports = model<User>("users", UserSchema);
+UserSchema.pre('save', function saveHook(next) {
+  const user = this;
+  if (!user.isModified('password')) return next();
+  const salt = randomBytes(16).toString("hex")
+  user.password = `${scryptSync(user.password, salt, 32).toString("hex")}:${salt}`
+  return next();
+});
+export default model<IUser>("users", UserSchema);

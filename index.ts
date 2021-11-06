@@ -1,16 +1,21 @@
-require('dotenv').config()
+
+import cors from "./src/tools/cors";
+
 import * as http from "http";
 // @ts-ignore
 import express, {Request, Response,NextFunction, Application} from 'express'
 import { ApolloServer, PubSub } from "apollo-server-express";
 import  db  from './src/db' ;
+
 import { typeDefs, resolvers } from "./src/schema";
 import formatError from './src/helper/formatError';
 import dataSources from "./src/datasource";
+import cookieParser from 'cookie-parser'
 
+import {MONGO_URL, DOKKU_MONGO_AQUA_URL, isDev} from "./src/tools/config";
+import inculdeUser from "./src/helper/IncludeUser";
 
-const {MONGO_URL,DOKKU_MONGO_AQUA_URL} = require("./src/tools/config");
-new db( console, null ).connect( MONGO_URL || DOKKU_MONGO_AQUA_URL );
+new db( console ).connect( MONGO_URL || DOKKU_MONGO_AQUA_URL );
 
 const { readFileSync } = require('fs');
 
@@ -53,22 +58,9 @@ const homedir = require('os').homedir();
 //   })
 //   // stream.end('ls -a');
 // },10000)
-app.use((req:Request, res:Response, next: NextFunction) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-with, Content-Type,Accept, Authorization"
-  );
-
-  if (req.method === "OPTIONS") {
-    res.header(
-      "Access-Control-Allow-Methods",
-      "PUT,POST,GET,DELETE,PATCH,UPDATE"
-    );
-    return res.status(200).json({});
-  }
-  next();
-});
+app.use(cookieParser())
+app.use(cors);
+app.use(inculdeUser);
 
 // connect to database
 
@@ -94,9 +86,8 @@ const server = new ApolloServer({
       reportSchema: true,
     },
   }),
-  introspection: true,
-  tracing: true,
-  playground: true,
+  introspection: isDev,
+  tracing: isDev,
 });
 // setting middleware
 
