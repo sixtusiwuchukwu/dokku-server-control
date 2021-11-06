@@ -1,6 +1,6 @@
+
 import cors from "./src/tools/cors";
 
-require('dotenv').config()
 import * as http from "http";
 // @ts-ignore
 import express, {Request, Response,NextFunction, Application} from 'express'
@@ -14,6 +14,7 @@ import cookieParser from 'cookie-parser'
 
 import {MONGO_URL, DOKKU_MONGO_AQUA_URL, isDev} from "./src/tools/config";
 import inculdeUser from "./src/helper/IncludeUser";
+
 new db( console ).connect( MONGO_URL || DOKKU_MONGO_AQUA_URL );
 
 const { readFileSync } = require('fs');

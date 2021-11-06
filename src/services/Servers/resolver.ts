@@ -1,27 +1,34 @@
-const MESSAGE_SENT = "MESSAGE_SENT";
+import {requiresAuth} from "../../helper/permissions";
+
+const MESSAGE_SENT : string= "MESSAGE_SENT";
 
 const ServerQuery = {
-  listServers: async (root:any, data:any , { datasources }:{datasources: { Server:any }}) => {
+  // @ts-ignore
+  listServers:  requiresAuth.createResolver(async (root:any, data:any , { datasources }:{datasources: { Server:any }}) => {
     const { Server } = datasources;
     return await new Server("h").listServers(data);
-  },
+  }),
 };
 
+// @ts-ignore
+
 const ServerMutations = {
-  addServer: async (root:any, { data }:{data:object}, { datasources }:{datasources:{Server:any}}) => {
+// @ts-ignore
+  addServer: requiresAuth.createResolver(async (root:any, { data }:{data:object}, { datasources }:{datasources:{Server:any}}) => {
     const { Server } = datasources;
     return await new Server("d").addServer(data);
-  },
-  stopServer: async (root:any,  data:any , { datasources }:{datasources: any}) => {
+  }),
+  // @ts-ignore
+  stopServer: requiresAuth.createResolver(async (root:any,  data:any , { datasources }:{datasources: any}) => {
     const { Server } = datasources;
     return await new Server("d").stopServer(data);
-  },
+  }),
 };
 
 const ServerSubscription = {
   newPost: {
     subscribe: async (root:any, args:any, { pubsub }:{pubsub:any}) => {
-      return await pubsub.asyncIterator(MESSAGE_SENT);
+      return pubsub.asyncIterator(MESSAGE_SENT);
     },
   },
 };

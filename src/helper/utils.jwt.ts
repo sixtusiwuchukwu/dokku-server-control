@@ -66,8 +66,10 @@ export const refreshTokens = async (token:string, refreshToken:string) => {
 };
 export const verifyJWT = async (token: string):Promise<any>=> {
     try {
-      const decoded = jwt.verify(token,publicKey)
-        return {payload: decoded, expired: false}
+      jwt.verify(token,publicKey)
+      const decoded = jwt.decode(token)
+      // @ts-ignore
+      return {...decoded, expired: false}
     }
     catch (e) {
         throw new Error('jwt expired')

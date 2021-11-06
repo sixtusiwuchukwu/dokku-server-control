@@ -10,6 +10,7 @@ const UserMutation = {
     const { User } = datasources;
     return await new User("s").addUser(data);
   },
+
   loginUser: async (root:any, data:object, { datasources, req, res }: {datasources:{User:any}, req: Request, res: Response}) => {
     const { User } = datasources;
     const [accessToken, refreshAccessToken ] = await new User("s").loginUser(data);

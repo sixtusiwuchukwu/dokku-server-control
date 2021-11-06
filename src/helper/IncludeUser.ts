@@ -7,9 +7,7 @@ export default async (req:Request, res: Response, next: NextFunction) => {
   if (token) {
     try {
       // @ts-ignore
-      const user  = await verifyJWT(token);
-      // @ts-ignore
-      req.user = user;
+      req.user = await verifyJWT(token);
     } catch (err) {
       // @ts-ignore
       const refreshToken = req.cookies['x-refresh-token'];
