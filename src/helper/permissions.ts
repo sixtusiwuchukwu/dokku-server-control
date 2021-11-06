@@ -13,7 +13,6 @@ const createResolver = (resolver: (parent: any, args: any, context: any, info: a
 };
 
 export const requiresAuth = createResolver((parent, args, context) => {
-  console.log(context.req.user)
   if (!context?.req.user || !context?.req.user?._id) {
     throw new AuthenticationError('Not authenticated');
   }
