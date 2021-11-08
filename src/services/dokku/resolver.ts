@@ -1,29 +1,20 @@
-import {requiresAuth} from "../../helper/permissions";
+import {permitted, requiresAuth} from "../../helper/permissions";
 import DokkuAppControl from "./datasource";
 
 const MESSAGE_SENT : string = "MESSAGE_SENT";
 
-const ServerQuery = {
-  // @ts-ignore
-  // listServers:  requiresAuth.createResolver(async (root:any, data:any , { dataSources }:{dataSources: { Server:any }}) => {
-  //   const { Server } = dataSources;
-  //   return await new Server("h").listServers(data);
-  // }),
+const DokkuAppQuery = {
+
 };
 
 // @ts-ignore
 
 const DokkuAppMutations = {
   // @ts-ignore
-  startDokkuApp: requiresAuth.createResolver(async (root:any,  data:any , { dataSources }:{dataSources: any}) => {
+  startDokkuApp: requiresAuth.createResolver(async (root:any, data:any , { dataSources }:{dataSources: any}) => {
     const { DokkuAppControl } = dataSources;
-    return  await new DokkuAppControl("d").startDokkuApp(data);
-  }),
-  // @ts-ignore
-  stopServer: requiresAuth.createResolver(async (root:any,  data:any , { dataSources }:{dataSources: any}) => {
-    const { DokkuAppControl } = dataSources;
-    return await new DokkuAppControl("d").stopServer(data);
-  }),
+    return  await new DokkuAppControl().startDokkuApp(data);
+  })
 };
 
 const ServerSubscription = {
@@ -34,4 +25,4 @@ const ServerSubscription = {
   },
 };
 
-export { ServerQuery, DokkuAppMutations, ServerSubscription };
+export { DokkuAppQuery, DokkuAppMutations, ServerSubscription };

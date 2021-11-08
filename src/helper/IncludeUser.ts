@@ -11,6 +11,10 @@ export default async (req:Request, res: Response, next: NextFunction) => {
     } catch (err) {
       // @ts-ignore
       const refreshToken = req.cookies['x-refresh-token'];
+      if(!refreshToken) {
+        (req as any).user = null
+        next()
+      }
       const newTokens = await refreshTokens(token, refreshToken);
       if (newTokens.token && newTokens.refreshToken) {
         // @ts-ignore
