@@ -1,4 +1,4 @@
-import {ValidationError, AuthenticationError} from "apollo-server-express";
+import {ValidationError, AuthenticationError, ForbiddenError} from "apollo-server-express";
 
 const createResolver = (resolver: (parent: any, args: any, context: any, info: any) => void) => {
   const baseResolver = resolver;
@@ -18,9 +18,19 @@ export const requiresAuth = createResolver((parent, args, context) => {
   }
 });
 
-export const requiresAdmin = (requiresAuth as any).createResolver((parent: any, args: any, context: { user: { isAdmin: any; }; }) => {
+export const requiresAdmin = (requiresAuth as any).createResolver((parent: any, args: any, context: any) => {
   // @ts-ignore
   if (!context?.req.user?.isAdmin) {
     throw new ValidationError('Requires admin access');
   }
 });
+
+export const permitted = (requiresAuth as any).createResolver((parent: any, args:any, context:any, info:any)=> {
+  const permissions = ["startDokkuApp", "stopServer", "listServers"]
+  if(!permissions.includes(info.fieldName)){
+    throw new ForbiddenError('operation not allowed')
+  }
+  // if(!context?.req?.user?.permissions?.includes("")){
+  //   throw new ForbiddenError('operation not allowed')
+  // }
+})

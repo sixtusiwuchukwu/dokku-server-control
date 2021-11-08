@@ -8,7 +8,7 @@ export default class DefaultScripts {
   async addDefaultAdmin() {
     const user:number = await User.countDocuments()
     if(user > 0) return console.log('default account already created');
-    const code:string = await new Base(["all"]).getCodeNumber('uc', User)
+    const code:string = await new Base().getCodeNumber('uc', User)
     await User.create({code,...JSON.parse(defaultAdminAccount)})
     console.log("Default Account Created")
   }

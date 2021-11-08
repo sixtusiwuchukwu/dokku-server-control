@@ -11,8 +11,8 @@ class DokkuAppControl extends Base {
     const {host,port,pkey,username}: IServers = server
     const ssh:any = await this.RemoteServer(host, username, pkey, port)
     const res = await ssh.execCommand(`dokku ps:start ${appName}`, { cwd:'' })
-    if(res.stderr !== "") throw new UserInputError(`Error ${res.stderr}`)
-    return `${res.stdout} server started`
+    if(res.stderr !== "") throw new UserInputError(`Error: ${res.stderr}`)
+    return `${res.stdout} server started`;
   }
 }
 
