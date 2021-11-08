@@ -10,6 +10,7 @@ export interface IServers {
   host: string
   addedBy:ObjectId
   serverName: string
+  ip: string
   pkey: string
   createdAt: Date
   updatedAt: Date

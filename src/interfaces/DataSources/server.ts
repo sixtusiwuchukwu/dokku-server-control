@@ -4,6 +4,7 @@ export interface IListServersInterface {
     serverName: string
 }
 export interface IAddServerInterface {
+    ServerName: string;
     username:string
     host:string
     pkey:string

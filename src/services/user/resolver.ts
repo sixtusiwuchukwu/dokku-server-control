@@ -6,13 +6,13 @@ const pubsub = new PubSub();
 
 const NEW_USER = "NEWUSER";
 const UserMutation = {
-  addUser: async (root:any, { data }:{data:any}, { datasources }: {datasources:{User:any}}) => {
-    const { User } = datasources;
+  addUser: async (root:any, { data }:{data:any}, { dataSources }: {dataSources:{User:any}}) => {
+    const { User } = dataSources;
     return await new User("s").addUser(data);
   },
 
-  loginUser: async (root:any, data:object, { datasources, req, res }: {datasources:{User:any}, req: Request, res: Response}) => {
-    const { User } = datasources;
+  loginUser: async (root:any, data:object, { dataSources, req, res }: {dataSources:{User:any}, req: Request, res: Response}) => {
+    const { User } = dataSources;
     const [accessToken, refreshAccessToken ] = await new User("s").loginUser(data);
     res.cookie('x-token',accessToken, cookieOptions)
     res.cookie('x-refresh-token',refreshAccessToken, cookieOptions)
@@ -20,8 +20,8 @@ const UserMutation = {
   },
 };
 const UserQuery = {
-  getCurrentUser: async (root:any, { data }:{data:any}, { datasources }: {datasources:{User:any}}) => {
-    const { User } = datasources;
+  getCurrentUser: async (root:any, { data }:{data:any}, { dataSources }: {dataSources:{User:any}}) => {
+    const { User } = dataSources;
     const newuser = await new User().joinGroup(data);
     await pubsub.publish(NEW_USER, { newUser: newuser });
     return newuser;

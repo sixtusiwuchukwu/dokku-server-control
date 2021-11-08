@@ -1,15 +1,26 @@
 import {Config} from "node-ssh";
 const { NodeSSH } = require("node-ssh");
 const ids = require('short-id');
+import dns from 'dns/promises'
 import { Model } from 'mongoose';
+import {UserInputError} from "apollo-server-express";
 // const
 class Base {
   constructor(params:Array<string>) {
    if(!params) throw new Error('Permissions for operations not defined kindly do that')
 
   }
+
+  async lookUp(host:string){
+    try {
+     return await dns.lookup(host)
+    }
+    catch (e:any){
+      throw new UserInputError('unable to resolve address')
+    }
+  }
   RemoteServer(host: string, username: string, pkey: string, port: number = 22):Promise<void> {
-    const ssh:Config = new NodeSSH();
+    const ssh = new NodeSSH();
     return ssh.connect({
       host,
       username,

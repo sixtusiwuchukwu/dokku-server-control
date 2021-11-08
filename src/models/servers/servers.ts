@@ -7,6 +7,10 @@ const ServesSchema = new Schema<IServers>({
     type: String,
     required: true,
   },
+  ip: {
+    type: String,
+    required: true
+  },
   addedBy: {
     type: Schema.Types.ObjectId,
     required: true
@@ -31,4 +35,4 @@ const ServesSchema = new Schema<IServers>({
   timestamps: true
 });
 plugin( mongoosePaginate )
-module.exports = model<IServers>("server", ServesSchema);
+export default model<IServers>("server", ServesSchema);

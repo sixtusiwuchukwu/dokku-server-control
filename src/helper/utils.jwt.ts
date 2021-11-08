@@ -47,7 +47,7 @@ export const refreshTokens = async (token:string, refreshToken:string) => {
   if (!userId || !lastReset) {
     return {};
   }
-  const user = await User.findOne({_id:userId, lastReset: lastReset},{username:1, email:1, lastReset:1});
+  const user = await User.findOne({_id:userId, lastReset: lastReset},{username:1, email:1, lastReset:1},{lean:true});
   if (!user) {
     return {};
   }
@@ -57,7 +57,7 @@ export const refreshTokens = async (token:string, refreshToken:string) => {
   } catch (err) {
     return {};
   }
-  const [newToken, newRefreshToken] = signJWT(user,'5s', '1h');
+  const [newToken, newRefreshToken] = signJWT(user,'15s', '24h');
   return {
     token: newToken,
     refreshToken: newRefreshToken,
@@ -67,9 +67,10 @@ export const refreshTokens = async (token:string, refreshToken:string) => {
 export const verifyJWT = async (token: string):Promise<any>=> {
     try {
       jwt.verify(token,publicKey)
-      const decoded = jwt.decode(token)
+      const decoded:any = jwt.decode(token)
+      decoded.expired = false;
       // @ts-ignore
-      return {...decoded, expired: false}
+      return decoded
     }
     catch (e) {
         throw new Error('jwt expired')
