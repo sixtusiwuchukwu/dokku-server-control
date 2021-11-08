@@ -13,7 +13,7 @@ import dataSources from "./src/datasource";
 import cookieParser from 'cookie-parser'
 
 import {MONGO_URL, DOKKU_MONGO_AQUA_URL, isDev} from "./src/tools/config";
-import inculdeUser from "./src/helper/IncludeUser";
+import includeUser from "./src/helper/IncludeUser";
 
 new db( console ).connect( MONGO_URL || DOKKU_MONGO_AQUA_URL );
 
@@ -60,7 +60,7 @@ const homedir = require('os').homedir();
 // },10000)
 app.use(cookieParser())
 app.use(cors);
-app.use(inculdeUser);
+app.use(includeUser);
 
 // connect to database
 
@@ -68,6 +68,7 @@ app.use(inculdeUser);
 
 
 const pubsub:any = new PubSub();
+
 
 const server = new ApolloServer({
   typeDefs,
@@ -81,7 +82,7 @@ const server = new ApolloServer({
     req,
     res,
     pubsub,
-    datasources:dataSources,
+    dataSources:dataSources,
     engine: {
       reportSchema: true,
     },

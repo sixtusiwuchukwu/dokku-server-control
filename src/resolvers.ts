@@ -9,9 +9,14 @@ import {
   ServerSubscription,
 } from "./services/Servers/resolver";
 
+import {
+  DokkuAppMutations
+} from "./services/dokku/resolver";
+
 const Mutation = {
   ...UserMutation,
   ...ServerMutations,
+  ...DokkuAppMutations
 };
 const Query = {
   ...ServerQuery,

@@ -1,10 +1,10 @@
 import {IAddServerInterface, IListServersInterface} from "../../interfaces/DataSources/server";
-
-const __Server = require("../../models/servers/servers");
+import __Server from '../../models/servers/servers';
 const { UserInputError } = require("apollo-server-express");
 import Base from '../../../base';
+import dns from "dns/promises";
 
-class ServerDatasource extends Base {
+class ServerControl extends Base {
   constructor(props:any) {
     super(props);
   }
@@ -24,13 +24,16 @@ class ServerDatasource extends Base {
       },
     };
 
-    return await __Server.paginate({ ...query }, options);
+    return await (__Server as any).paginate({ ...query }, options);
   }
-  async addServer(data: IAddServerInterface) {
+  async addServer(data: IAddServerInterface, user:any) {
     try {
       const { username, host, pkey, port } = data;
       await this.RemoteServer(host, username, pkey, port);
-      await __Server.create(data);
+      const ip = await dns.lookup(host)
+      const isExits = await __Server.findOne({$or:[{ip:ip.address}, {ServerName: data.ServerName}]})
+      if(isExits) throw new UserInputError('Server name or Ip Already exit')
+      await __Server.create({...data, addedBy: user._id, ip:ip.address});
       return "New server Added";
     } catch (e) {
       if (e.message.includes("authentication methods failed")) {
@@ -90,4 +93,4 @@ class ServerDatasource extends Base {
   }
 }
 
-export default ServerDatasource;
+export default ServerControl;
