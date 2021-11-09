@@ -19,7 +19,7 @@ class UserDatasource extends Base{
   }
   async loginUser({accountId, password}:{accountId:string, password:string}) {
     const NotFound:string = "Invalid login credentials";
-    const user = await User.findOne({"$or":[{username:accountId}, {email: accountId}, {phone: accountId}]},  {username:1,email:1, password:1, lastReset: 1},{lean:true},);
+    const user = await User.findOne({"$or":[{username:accountId}, {email: accountId}, {phone: accountId}]},  {username:1,email:1, password:1, lastReset: 1});
     if(!user) throw new UserInputError(NotFound)
     // @ts-ignore
     const isPass = await User.comparePassword(user.password, password)
