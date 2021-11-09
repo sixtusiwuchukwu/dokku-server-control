@@ -5,14 +5,61 @@ import { UserInputError, ValidationError } from "apollo-server-express";
 import {IServers} from "../../interfaces/datebaseInterface/mongo";
 
 class DokkuAppControl extends Base {
+  async createDokkuApp({ serverId, appName }:{serverId: mongoose.ObjectId, appName:string}) {
+    const server = await Server.findById(serverId)
+    if(!server) throw new ValidationError('unable to validate  server')
+    const {host,port,pkey,username}: IServers = server
+    const ssh:any = await this.RemoteServer(host, username, pkey, port)
+    const res =  ssh.execCommand(`dokku ps:create ${appName}`, { cwd:'' })
+    if(res.stderr !== "") throw new UserInputError(`Error: ${res.stderr}`)
+    return `${res.stdout} server started`;
+  }
   async startDokkuApp({ serverId, appName }:{serverId: mongoose.ObjectId, appName:string}) {
     const server = await Server.findById(serverId)
     if(!server) throw new ValidationError('unable to validate  server')
     const {host,port,pkey,username}: IServers = server
     const ssh:any = await this.RemoteServer(host, username, pkey, port)
-    const res = await ssh.execCommand(`dokku ps:start ${appName}`, { cwd:'' })
+    const res =  ssh.execCommand(`dokku ps:start ${appName}`, { cwd:'' })
     if(res.stderr !== "") throw new UserInputError(`Error: ${res.stderr}`)
     return `${res.stdout} server started`;
+  }
+  async stopDokkuApp({ serverId, appName }:{serverId: mongoose.ObjectId, appName:string}) {
+   const server = await Server.findById(serverId);
+    if(!server) throw new ValidationError('unable to validate  server')
+    const {host,port,pkey,username}: IServers = server
+    const ssh:any = await this.RemoteServer(host, username, pkey, port)
+    const res =  ssh.execCommand(`dokku ps:stop ${appName}`, { cwd:'' })
+    if(res.stderr !== "") throw new UserInputError(`Error: ${res.stderr}`)
+    return `${res.stdout} server stopped`;
+  }
+  async stopAllDokkuApp({ serverId,}:{serverId: mongoose.ObjectId}) {
+   const server = await Server.findById(serverId);
+    if(!server) throw new ValidationError('unable to validate  server')
+    const {host,port,pkey,username}: IServers = server
+    const ssh:any = await this.RemoteServer(host, username, pkey, port)
+    const res = ssh.execCommand(`dokku ps:stop --all`, { cwd:'' })
+    if(res.stderr !== "") throw new UserInputError(`Error: ${res.stderr}`)
+    return `${res.stdout} servers stopped`;
+  }
+
+  async restartPolicy({ serverId,appName,policy}:{serverId: mongoose.ObjectId, policy:string,appName:string}) {
+   const server = await Server.findById(serverId);
+    if(!server) throw new ValidationError('unable to validate  server')
+    const {host,port,pkey,username}: IServers = server
+    const ssh:any = await this.RemoteServer(host, username, pkey, port)
+    const res = ssh.execCommand(`dokku ps:set ${appName} restart-policy ${policy}`, {cwd: ''})
+    if(res.stderr !== "") throw new UserInputError(`Error: ${res.stderr}`)
+    return `${res.stdout} set reStartPolicy ${policy}`;
+  }
+
+  async DokkuAppReport({ serverId,appName,select=""}:{serverId: mongoose.ObjectId, policy:string,appName:string,select:string}) {
+   const server = await Server.findById(serverId);
+    if(!server) throw new ValidationError('unable to validate  server')
+    const {host,port,pkey,username}: IServers = server
+    const ssh:any = await this.RemoteServer(host, username, pkey, port)
+    const res = ssh.execCommand(`dokku ps:report ${appName} ${select && select}`, {cwd: ''})
+    if(res.stderr !== "") throw new UserInputError(`Error: ${res.stderr}`)
+    return `${res.stdout} ${appName}:Report`;
   }
 }
 
