@@ -19,12 +19,12 @@ class UserDatasource extends Base{
   }
   async loginUser({accountId, password}:{accountId:string, password:string}) {
     const NotFound:string = "Invalid login credentials";
-    const user = await User.findOne({"$or":[{username:accountId}, {email: accountId}, {phone: accountId}]}, {username:1,email:1, password:1, lastReset: 1});
+    const user = await User.findOne({"$or":[{username:accountId}, {email: accountId}, {phone: accountId}]},  {username:1,email:1, password:1, lastReset: 1},{lean:true},);
     if(!user) throw new UserInputError(NotFound)
     // @ts-ignore
     const isPass = await User.comparePassword(user.password, password)
     if(!isPass) throw new UserInputError(NotFound);
-    return signJWT({lastReset:user.lastReset,username: user.username, email:user.email, _id: user._id}, '5s', "1h")
+    return signJWT({lastReset: user.lastReset, username: user.username, email: user.email, _id: user._id}, '5s', "1h");
   }
 }
 

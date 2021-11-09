@@ -5,7 +5,7 @@ const MESSAGE_SENT : string= "MESSAGE_SENT";
 
 const ServerQuery = {
   // @ts-ignore
-  listServers:  permitted.createResolver(async (root:any, data:any , { dataSources }:{dataSources: { ServerControl:any }}) => {
+  listServers:  requiresAuth.createResolver(async (root:any, data:any , { dataSources }:{dataSources: { ServerControl:any }}) => {
     const { ServerControl } = dataSources;
     return await new ServerControl().listServers(data);
   }),
