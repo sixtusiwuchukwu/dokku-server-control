@@ -52,12 +52,12 @@ class DokkuAppControl extends Base {
     return `${res.stdout} set reStartPolicy ${policy}`;
   }
 
-  async DokkuAppReport({ serverId,appName,select=""}:{serverId: mongoose.ObjectId, policy:string,appName:string,select:string}) {
+  async DokkuAppReport({ serverId,appName,select}:{serverId: mongoose.ObjectId,appName:string,select:string}) {
    const server = await Server.findById(serverId);
     if(!server) throw new ValidationError('unable to validate  server')
     const {host,port,pkey,username}: IServers = server
     const ssh:any = await this.RemoteServer(host, username, pkey, port)
-    const res = ssh.execCommand(`dokku ps:report ${appName} ${select && select}`, {cwd: ''})
+    const res = ssh.execCommand(`dokku ps:report ${appName} ${select}`, {cwd: ''})
     if(res.stderr !== "") throw new UserInputError(`Error: ${res.stderr}`)
     return `${res.stdout} ${appName}:Report`;
   }

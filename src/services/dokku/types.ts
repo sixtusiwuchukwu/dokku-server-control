@@ -7,7 +7,7 @@ const dokkuGql = gql`
       stopDokkuApp(serverId: ID! appName: String!):String
       StopAllDokkuApp(serverId: ID!):String
       restartPolicy(serverId: ID! policy: String! appName: String!):String
-      DokkuAppReport(serverId:ID! appName:String! select:String):String
+      DokkuAppReport(serverId:ID! appName:String! select:String!):String
   }
   
 `
