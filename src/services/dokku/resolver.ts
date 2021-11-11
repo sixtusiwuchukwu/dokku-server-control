@@ -30,19 +30,24 @@ const DokkuAppMutations = {
   }) ,
 
   // @ts-ignore
-  StopAllDokkuApp: requiresAuth.createResolver(async (root:any, data:any , { dataSources }:{dataSources: any}) => {
+  stopAllDokkuApp: requiresAuth.createResolver(async (root:any, data:any , { dataSources }:{dataSources: any}) => {
     const { DokkuAppControl } = dataSources;
     return  await new DokkuAppControl().stopAllDokkuApp(data);
   }),
   // @ts-ignore
-  restartPolicy: requiresAuth.createResolver(async (root:any, data:any , { dataSources }:{dataSources: any}) => {
+  reStartPolicy: requiresAuth.createResolver(async (root:any, data:any , { dataSources }:{dataSources: any}) => {
     const { DokkuAppControl } = dataSources;
-    return  await new DokkuAppControl().restartPolicy(data);
+    return  await new DokkuAppControl().reStartPolicy(data);
   }),
   // @ts-ignore
-  DokkuAppReport: requiresAuth.createResolver(async (root:any, data:any , { dataSources }:{dataSources: any}) => {
+  dokkuAppReport: requiresAuth.createResolver(async (root:any, data:any , { dataSources }:{dataSources: any}) => {
     const { DokkuAppControl } = dataSources;
-    return  await new DokkuAppControl().DokkuAppReport(data);
+    return  await new DokkuAppControl().dokkuAppReport(data);
+  }),
+  // @ts-ignore
+  reBuildDokkuApp: requiresAuth.createResolver(async (root:any, data:any , { dataSources }:{dataSources: any}) => {
+    const { DokkuAppControl } = dataSources;
+    return  await new DokkuAppControl().reBuildDokkuApp(data);
   }),
 };
 

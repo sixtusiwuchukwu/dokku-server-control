@@ -42,7 +42,7 @@ class DokkuAppControl extends Base {
     return `${res.stdout} servers stopped`;
   }
 
-  async restartPolicy({ serverId,appName,policy}:{serverId: mongoose.ObjectId, policy:string,appName:string}) {
+  async reStartPolicy({ serverId,appName,policy}:{serverId: mongoose.ObjectId, policy:string,appName:string}) {
    const server = await Server.findById(serverId);
     if(!server) throw new ValidationError('unable to validate  server')
     const {host,port,pkey,username}: IServers = server
@@ -52,12 +52,23 @@ class DokkuAppControl extends Base {
     return `${res.stdout} set reStartPolicy ${policy}`;
   }
 
-  async DokkuAppReport({ serverId,appName,select}:{serverId: mongoose.ObjectId,appName:string,select:string}) {
+  async dokkuAppReport({ serverId,appName,select}:{serverId: mongoose.ObjectId,appName:string,select:string}) {
    const server = await Server.findById(serverId);
     if(!server) throw new ValidationError('unable to validate  server')
     const {host,port,pkey,username}: IServers = server
     const ssh:any = await this.RemoteServer(host, username, pkey, port)
     const res = ssh.execCommand(`dokku ps:report ${appName} ${select}`, {cwd: ''})
+    if(res.stderr !== "") throw new UserInputError(`Error: ${res.stderr}`)
+    return `${res.stdout} ${appName}:Report`;
+  }
+
+  async reBuildDokkuApp({ serverId,appName}:{serverId: mongoose.ObjectId,appName:string}) {
+   const server = await Server.findById(serverId);
+   const option = appName ? appName : "--all"
+    if(!server) throw new ValidationError('unable to validate  server')
+    const {host,port,pkey,username}: IServers = server
+    const ssh:any = await this.RemoteServer(host, username, pkey, port)
+    const res = ssh.execCommand(`dokku ps:rebuild ${option}`, {cwd: ''})
     if(res.stderr !== "") throw new UserInputError(`Error: ${res.stderr}`)
     return `${res.stdout} ${appName}:Report`;
   }
