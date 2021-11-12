@@ -49,6 +49,27 @@ const DokkuAppMutations = {
     const { DokkuAppControl } = dataSources;
     return  await new DokkuAppControl().reBuildDokkuApp(data);
   }),
+
+  // @ts-ignore
+  reStartDokkuApp: requiresAuth.createResolver(async (root:any, data:any , { dataSources }:{dataSources: any}) => {
+    const { DokkuAppControl } = dataSources;
+    return  await new DokkuAppControl().reStartDokkuApp(data);
+  }),
+  // @ts-ignore
+  reStartAllDokkuApp: requiresAuth.createResolver(async (root:any, data:any , { dataSources }:{dataSources: any}) => {
+    const { DokkuAppControl } = dataSources;
+    return  await new DokkuAppControl().reStartAllDokkuApp(data);
+  }),
+  // @ts-ignore
+  reNameDokkuApp: requiresAuth.createResolver(async (root:any, data:any , { dataSources }:{dataSources: any}) => {
+    const { DokkuAppControl } = dataSources;
+    return  await new DokkuAppControl().reNameDokkuApp(data);
+  }),
+  // @ts-ignore
+  dokkuInstallPlugin: requiresAuth.createResolver(async (root:any, data:any , { dataSources }:{dataSources: any}) => {
+    const { DokkuAppControl } = dataSources;
+    return  await new DokkuAppControl().dokkuInstallPlugin(data);
+  }),
 };
 
 const ServerSubscription = {

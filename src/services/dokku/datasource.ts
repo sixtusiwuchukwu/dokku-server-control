@@ -70,7 +70,46 @@ class DokkuAppControl extends Base {
     const ssh:any = await this.RemoteServer(host, username, pkey, port)
     const res = ssh.execCommand(`dokku ps:rebuild ${option}`, {cwd: ''})
     if(res.stderr !== "") throw new UserInputError(`Error: ${res.stderr}`)
-    return `${res.stdout} ${appName}:Report`;
+    return `${res.stdout} dokkuApp rebuild`;
+  }
+  async reStartDokkuApp({ serverId,appName}:{serverId: mongoose.ObjectId,appName:string}) {
+   const server = await Server.findById(serverId);
+    if(!server) throw new ValidationError('unable to validate  server')
+    const {host,port,pkey,username}: IServers = server
+    const ssh:any = await this.RemoteServer(host, username, pkey, port)
+    const res = ssh.execCommand(`dokku ps:restart ${appName}`, {cwd: ''})
+    if(res.stderr !== "") throw new UserInputError(`Error: ${res.stderr}`)
+    return `${res.stdout} dokku app Restarted`;
+  }
+
+  async reStartAllDokkuApp({ serverId,parallel,flag}:{serverId: mongoose.ObjectId,parallel:Boolean,flag:Number}) {
+   const server = await Server.findById(serverId);
+   let option = parallel === true && flag ? `--parallel ${flag}` : ""
+    if(!server) throw new ValidationError('unable to validate  server')
+    const {host,port,pkey,username}: IServers = server
+    const ssh:any = await this.RemoteServer(host, username, pkey, port)
+    const res = ssh.execCommand(`dokku ps:restart --all ${option}`, {cwd: ''})
+    if(res.stderr !== "") throw new UserInputError(`Error: ${res.stderr}`)
+    return `${res.stdout} dokku apps Restarted`;
+  }
+  async reNameDokkuApp({ serverId,currentName,newName,skipDeploy}:{serverId: mongoose.ObjectId,currentName:String,newName:Number,skipDeploy:Boolean}) {
+   const server = await Server.findById(serverId);
+   const flag = skipDeploy === true ? "--skip-deploy" : ""
+    if(!server) throw new ValidationError('unable to validate  server')
+    const {host,port,pkey,username}: IServers = server
+    const ssh:any = await this.RemoteServer(host, username, pkey, port)
+    const res = ssh.execCommand(`dokku apps:rename ${flag} ${currentName} ${newName}`, {cwd: ''})
+    if(res.stderr !== "") throw new UserInputError(`Error: ${res.stderr}`)
+    return `${res.stdout} dokku app Renamed`;
+  }
+  async dokkuInstallPlugin({ serverId,pluginName}:{serverId: mongoose.ObjectId,pluginName:String}) {
+   const server = await Server.findById(serverId);
+    if(!server) throw new ValidationError('unable to validate  server')
+    const {host,port,pkey,username}: IServers = server
+    const ssh:any = await this.RemoteServer(host, username, pkey, port)
+    const res = ssh.execCommand(`sudo dokku plugin:install ${pluginName}`, {cwd: ''})
+    if(res.stderr !== "") throw new UserInputError(`Error: ${res.stderr}`)
+    return `${res.stdout} plugin installed`;
   }
 }
 
