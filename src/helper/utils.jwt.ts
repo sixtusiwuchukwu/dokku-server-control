@@ -27,7 +27,7 @@ eVlxG6rHyQaAcR59uQIDAQAB
 `
 
 export const signJWT = (payload: object, expiresIn: string | number, refreshExpiresIn?: string | number) => {
-  const newPayloadData = (payload as any).toObject({ getters: true })
+  const newPayloadData = (payload as any)
    const newToken = jwt.sign({...newPayloadData, lastReset: undefined}, privateKey, {expiresIn, algorithm:'RS256'})
    // @ts-ignore
   const newRefreshToken =  jwt.sign({_id: payload._id, integrity:payload.lastReset}, privateKey, {expiresIn:refreshExpiresIn||expiresIn, algorithm:'RS256'})
@@ -48,7 +48,7 @@ export const refreshTokens = async (token:string, refreshToken:string) => {
   if (!userId || !lastReset) {
     return {};
   }
-  const user = await User.findOne({_id:userId, lastReset: lastReset},{username:1, email:1, lastReset:1});
+  const user = await User.findOne({_id:userId, lastReset: lastReset},{username:1, email:1, lastReset:1}, {lean: true});
   if (!user) {
     return {};
   }

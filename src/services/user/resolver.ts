@@ -13,7 +13,7 @@ const UserMutation = {
 
   loginUser: async (root:any, data:object, { dataSources, req, res }: {dataSources:{User:any}, req: Request, res: Response}) => {
     const { User } = dataSources;
-    const [accessToken, refreshAccessToken ] = await new User("s").loginUser(data);
+    const [accessToken, refreshAccessToken ] = await new User("s").loginUser(data)
     res.cookie('x-token',accessToken, cookieOptions)
     res.cookie('x-refresh-token',refreshAccessToken, cookieOptions)
     return 'login completed'
