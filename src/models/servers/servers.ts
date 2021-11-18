@@ -1,5 +1,5 @@
 import {Schema, model, plugin} from 'mongoose'
-import {IServers} from "../../interfaces/datebaseInterface/mongo";
+import {IServers} from "../../interfaces/databaseInterface/mongo";
 const mongoosePaginate = require( 'mongoose-paginate-v2' );
 
 const ServesSchema = new Schema<IServers>({

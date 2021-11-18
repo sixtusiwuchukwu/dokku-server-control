@@ -1,4 +1,4 @@
-import {ObjectId} from 'mongoose'
+import { ObjectId } from 'mongoose';
 enum accountType {
   admin,
   user
@@ -16,12 +16,17 @@ export interface IServers {
   updatedAt: Date
 }
 export interface IUser {
-  username:string
-  code:string
-  phone: string
-  lastReset:string
   email:string
   password: string
+  code:string
+  createdAt: Date
+  updatedAt: Date
+}
+export interface  Person {
+  _id:ObjectId
+  username:string
+  phone: string
+  lastReset:string
   firstName: string
   lastName: string
   permissions: Array<string>

@@ -2,7 +2,7 @@ import Base from "../../../base";
 import Server from '../../models/servers/servers'
 import * as mongoose from "mongoose";
 import { UserInputError, ValidationError } from "apollo-server-express";
-import {IServers} from "../../interfaces/datebaseInterface/mongo";
+import {IServers} from "../../interfaces/databaseInterface/mongo";
 
 class DokkuAppControl extends Base {
   async createDokkuApp({ serverId, appName }:{serverId: mongoose.ObjectId, appName:string}) {
