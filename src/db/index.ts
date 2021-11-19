@@ -20,6 +20,7 @@ class db {
     mongoose.connect( DB_URL , options )
       .then( async () => {
         log.info( `Successfully connected to ${ DB_URL }` );
+
         new DefaultScripts();
       } )
       .catch( ( err:any ) => {

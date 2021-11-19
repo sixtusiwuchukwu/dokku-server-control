@@ -2,39 +2,33 @@ import {model, Schema} from 'mongoose'
 import {Person} from "../../interfaces/databaseInterface/mongo";
 
 const PersonUser = new Schema<Person>({
-    username: {
-        type: String,
-        index: true
-    },
-    email: {
-        type: String,
-        index: true,
-        unique:true
-    },
     phone:{
         type: String,
-
+        required: true
     },
     firstName: {
         type: String,
-
+        required: true,
+        toLowerCase:true
     },
     lastName: {
         type: String,
-
+        required: true,
+        toLowerCase:true
     },
-    lastReset: {
-        type: String,
-        default: Date.now(),
+    address: {
+      type: String,
+      required: true,
+      trim: true,
+      toLowerCase:true
     },
     permissions: {
         type: []
     },
-    blackListCommands: {
-        type: []
-    },
-    whiteListCommands: {
-        type: []
+    permissionListType: {
+      enum:['white', 'black'],
+      type:String,
+      required: true,
     },
     isBlocked: {
         type: Boolean,
@@ -45,14 +39,10 @@ const PersonUser = new Schema<Person>({
         type: [],
         default: ['/']
     },
-    accountType: {
-        type: String,
-        index:true,
-        enum: ['admin','user']
-    },
     user:{
         type:Schema.Types.ObjectId,
-        ref:'user'
+        index: true,
+        required: true
     }
 
 },{

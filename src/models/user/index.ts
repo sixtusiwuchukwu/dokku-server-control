@@ -12,15 +12,20 @@ const UserSchema = new Schema<IUser>({
         type: String,
       unique:true
     },
+    lastReset: {
+        type: String,
+        default: Date.now(),
+    },
+    accountType: {
+        type: String,
+        index:true,
+        enum: ['admin','user']
+    },
     code: {
         required: true,
         type: String,
         unique: true,
         index: true
-    },
-    person: {
-        type: Schema.Types.ObjectId,
-        ref: 'person'
     }
 }, {
     timestamps: true
