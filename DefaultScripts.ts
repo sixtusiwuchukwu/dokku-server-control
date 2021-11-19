@@ -4,7 +4,7 @@ import {defaultAdminAccount} from './src/tools/config'
 import Base from './base'
 export default class DefaultScripts {
   constructor() {
-    this.addDefaultAdmin().catch((e)=> console.error('Error Adding default admin', e))
+    // this.addDefaultAdmin().catch((e)=> console.error('Error Adding default admin', e))
   }
   async addDefaultAdmin() {
     const user:number = await __User.countDocuments()

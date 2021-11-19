@@ -27,6 +27,7 @@ export const requiresAdmin = (requiresAuth as any).createResolver((parent: any, 
 
 export const permitted = (requiresAuth as any).createResolver((parent: any, args:any, context:any, info:any)=> {
   const permissions = ["startDokkuApp", "stopServer", "listServers"]
+
   if(!permissions.includes(info.fieldName)){
     throw new ForbiddenError('operation not allowed')
   }
