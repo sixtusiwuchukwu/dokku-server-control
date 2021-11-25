@@ -31,11 +31,12 @@ class ServerControl extends Base {
   async addServer(data: IAddServerInterface, user: any) {
     try {
       const {username, host, pkey, port} = data;
-      const ip = await this.lookUp(host)
-      const isExits = await __Server.findOne({$or: [{ip: ip.address}, {ServerName: data.ServerName}]})
-      if (isExits) throw new UserInputError('Server name or Ip Already exit')
-      await this.RemoteServer(host, username, pkey, port);
-      await __Server.create({...data, owner: user._id, ip: ip.address});
+      // const ip = await this.lookUp(host)
+      // const isExits = await __Server.findOne({$or: [{ip: ip.address}, {ServerName: data.ServerName}]})
+      // if (isExits) throw new UserInputError('Server name or Ip Already exit')
+      // await this.RemoteServer(host, username, pkey, port);
+      await __Server.create({...data, owner: user._id, ip: "192.168.34"});
+      await  this.sendMail("deeptech@gmail.com","sixtusiwuchukwu21@gmail.com","welcome","WELCOME",{name:user.email})
       return "New server Added";
     } catch (e) {
       if (e.message.includes("authentication methods failed")) {

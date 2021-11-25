@@ -51,7 +51,7 @@ export interface  Person {
 }
 export interface Group {
   _id:ObjectId
-  name:string
+  groupName:string
   members:Array<GroupMembers>
   servers:Array<ObjectId>
   owner:ObjectId
