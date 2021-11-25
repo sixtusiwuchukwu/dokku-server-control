@@ -7,7 +7,7 @@ import {
   ServerQuery,
   ServerMutations,
   ServerSubscription,
-} from "./services/Servers/resolver";
+} from "./services/servers/resolver";
 
 import {
   DokkuAppMutations
@@ -28,9 +28,10 @@ const Subscription = {
 };
 const AllList:object = {...Query, ...Mutation}
 const FilteredList = Object.keys(AllList).filter(res => !removeFromList.includes(res))
-console.log(FilteredList)
+// console.log(FilteredList)
 export {
   Mutation,
   Query,
   Subscription,
+  FilteredList
 };

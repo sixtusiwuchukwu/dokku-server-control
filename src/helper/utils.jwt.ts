@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import User from '../models/user'
+import User from '../models/user/user'
 const privateKey:string = `
 -----BEGIN RSA PRIVATE KEY-----
 MIICXAIBAAKBgQDKPj94N+OIkOr3b/+9OBhmriacv/426lUcpQ8C0XqOoV2OCrnD

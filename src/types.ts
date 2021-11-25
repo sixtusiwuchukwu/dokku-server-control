@@ -1,6 +1,6 @@
 import { gql }from"apollo-server-express";
 import UserSchema from "./services/user/types";
-import PostSchema from "./services/Servers/types";
+import PostSchema from "./services/servers/types";
 import dokkuGql from "./services/dokku/types";
 
 // Types bootstrapper

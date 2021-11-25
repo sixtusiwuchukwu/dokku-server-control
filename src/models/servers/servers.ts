@@ -1,6 +1,7 @@
 import {Schema, model, plugin} from 'mongoose'
 import {IServers} from "../../interfaces/databaseInterface/mongo";
-const mongoosePaginate = require( 'mongoose-paginate-v2' );
+import mongoosePaginate from  "mongoose-paginate-v2" ;
+import serverMembers from "../../models/reusableSchema/members"
 
 const ServesSchema = new Schema<IServers>({
   username: {
@@ -11,9 +12,10 @@ const ServesSchema = new Schema<IServers>({
     type: String,
     required: true
   },
-  addedBy: {
+  owner: {
     type: Schema.Types.ObjectId,
-    required: true
+    required: true,
+    index:true
   },
   port: {
     type: Number,
@@ -23,13 +25,22 @@ const ServesSchema = new Schema<IServers>({
     type: String,
     required: true,
   },
-  ServerName: {
+  serverName: {
     type: String,
-    required: true
+    required: true,
+    unique:true,
+    trim:true,
+    toLowerCase:true
+  },
+  members:{
+    type:[serverMembers]
   },
   pkey: {
     type: String,
     required: true
+  },
+  groupId:{
+    type:Schema.Types.ObjectId
   }
 }, {
   timestamps: true

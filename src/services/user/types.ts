@@ -5,6 +5,8 @@ const UserTypes = gql`
         addUser(data: userInput): String!
         loginUser(email: String! password: String!): String!
         updatePerson(data:updatePersonInput):String!
+        updatePassword(oldPassword:String!,newPassword:String!):String!
+        updateOne(oldPassword:String!,newPassword:String!):String!
     }
     extend type Query {
         getCurrentUser: User!
@@ -31,19 +33,22 @@ const UserTypes = gql`
         password: String!
         email: String!
     }
+    input address {
+        location:String
+    }
     
     input updatePersonInput{
         _id: ID
-        username: String
-        email: String
-        phone: String
-        firstName: String
-        lastName: String
-        permissions:[String!]
-        blackListCommands:[String]
-        whiteListCommands:[String]
-        allowedRoutes:[String!]
-        accountType: accountType
+#        username: String
+#        email: String
+        phone: String!
+        firstName: String!
+        lastName: String!
+        permissions:[String!]!
+#        blackListCommands:[String]!
+#        whiteListCommands:[String]!
+#        allowedRoutes:[String!]
+        address:[address]
     }
 
 `;

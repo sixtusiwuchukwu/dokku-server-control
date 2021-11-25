@@ -6,38 +6,34 @@ const PersonUser = new Schema<Person>({
         type: String,
         required: true
     },
-    firstName: {
+    firstName:{
         type: String,
         required: true,
         toLowerCase:true
     },
-    lastName: {
+    lastName:{
         type: String,
         required: true,
         toLowerCase:true
     },
-    address: {
-      type: String,
+    address:[ {
+      type: Object,
       required: true,
       trim: true,
       toLowerCase:true
-    },
+    }],
     permissions: {
         type: []
     },
-    permissionListType: {
-      enum:['white', 'black'],
-      type:String,
-      required: true,
-    },
+    // permissionListType: {
+    //   enum:['white', 'black'],
+    //   type:String,
+    //   required: true,
+    // },
     isBlocked: {
         type: Boolean,
         default: false,
         index: true
-    },
-    allowedRoutes: {
-        type: [],
-        default: ['/']
     },
     user:{
         type:Schema.Types.ObjectId,

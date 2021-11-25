@@ -19,7 +19,8 @@ const UserSchema = new Schema<IUser>({
     accountType: {
         type: String,
         index:true,
-        enum: ['admin','user']
+        enum: ['admin','user'],
+        default: "user"
     },
     code: {
         required: true,
