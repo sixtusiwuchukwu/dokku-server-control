@@ -1,24 +1,24 @@
-const { NodeSSH } = require("node-ssh");
+const {NodeSSH} = require("node-ssh");
 const ids = require('short-id');
 import dns from 'dns/promises'
-import { Model } from 'mongoose';
+import {Model} from 'mongoose';
 import nodemailer from 'nodemailer'
 import {UserInputError} from "apollo-server-express";
-import {isDev, MAIL_PASS, MAIL_PORT, MAIL_HOST, MAIL_USER} from "./src/tools/config";
+import {isDev, MAIL_HOST, MAIL_PASS, MAIL_PORT, MAIL_USER} from "./src/tools/config";
 import {WelcomeTemplate} from "./src/utils/emailTemplate/welcome"
 
 class Base {
-  async lookUp(host:string){
+  async lookUp(host: string) {
     try {
-     return await dns.lookup(host)
-    }
-    catch (e:any){
+      return await dns.lookup(host)
+    } catch (e: any) {
       throw new UserInputError('unable to resolve address')
     }
   }
-  async sendMailConfig(){
+
+  async sendMailConfig() {
     let mailConfig;
-    if (!isDev){
+    if (!isDev) {
       // all emails are delivered to destination
 
       mailConfig = {
@@ -41,26 +41,36 @@ class Base {
         }
       };
     }
-    return  nodemailer.createTransport(mailConfig);
+    return nodemailer.createTransport(mailConfig);
   }
-  async sendMail(from: string, to:string, subject:string, TemplateName:string,option:any) {
-    let templates = ["WELCOME"]
-    // let templates = [{"WELCOME":WelcomeTemplate}]
-    // templates.filter((template)=>template=== TemplateName)
-    if(!templates.includes(TemplateName))return "Template Name not found"
 
-    let info = {
+  async getTemplate(templateName: string) {
+    const selection: any = {
+      welcome: WelcomeTemplate,
+    };
+    const acceptedType = ["welcome"];
+    if (!acceptedType.includes(templateName)) throw new Error(`Unknown email template type expected one of ${acceptedType} but got ${templateName}`);
+    return selection[templateName]
+  }
+
+
+  async sendMail(from: string, to: string, subject: string, TemplateName: string, option: any) {
+
+    const template = this.getTemplate(TemplateName.toLowerCase())
+
+    const info = {
       from,
       to,
-      subject,
-      html:WelcomeTemplate(option?.name),
+      subject: subject.toUpperCase(),
+      html: (await template)(option),
     };
-    (await this.sendMailConfig()).sendMail(info).then(info=>{
+
+    (await this.sendMailConfig()).sendMail(info).then(info => {
       console.log('Preview URL: ' + nodemailer.getTestMessageUrl(info));
     });
   }
 
-  RemoteServer(host: string, username: string, pkey: string, port: number = 22):Promise<void> {
+  RemoteServer(host: string, username: string, pkey: string, port: number = 22): Promise<void> {
     const ssh = new NodeSSH();
     return ssh.connect({
       host,
@@ -69,6 +79,7 @@ class Base {
       privateKey: pkey,
     });
   }
+
   async getCodeNumber(name: string, model: Model<any>, objectName: string = "code") {
     let code;
     let codeCheck;
@@ -80,4 +91,5 @@ class Base {
     return `${name}${code}`;
   }
 }
+
 export default Base;

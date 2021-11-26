@@ -6,7 +6,7 @@ export interface IListServersInterface {
     serverName: string
 }
 export interface IAddServerInterface {
-    ServerName: string;
+    serverName: string;
     username:string
     host:string
     pkey:string
@@ -26,4 +26,9 @@ export interface  changeServerOwnershipInterface {
 export interface importServerToGroupInterface {
     serverId:ObjectId
     groupId:ObjectId
+}
+
+export interface removeServerMemberInterface{
+    serverId:ObjectId
+    memberEmail:string
 }

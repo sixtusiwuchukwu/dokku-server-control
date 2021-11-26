@@ -1,4 +1,8 @@
-const WelcomeTemplate = (name:string)=>{
+interface option  {
+	name:string
+}
+
+const WelcomeTemplate = ({name}:option)=>{
 	return`
 
 <!DOCTYPE html>
@@ -103,7 +107,7 @@ const WelcomeTemplate = (name:string)=>{
 <div style="font-family: sans-serif">
 <div style="font-size: 12px; font-family: Lato, Tahoma, Verdana, Segoe, sans-serif; mso-line-height-alt: 18px; color: #ffffff; line-height: 1.5;">
 <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 75px;"><span style="font-size:50px;"><strong><span style="font-size:50px;"><span style="font-size:38px;">WELCOME</span></span></strong></span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 51px;"><span style="font-size:34px;color:#ffffff;"><strong><span style="font-size:34px;"><span style="font-size:34px;">${name}</span></span></strong></span></p>
+<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 51px;"><span style="font-size:34px;color:#ffffff;"><strong><span style="font-size:34px;"><span style="font-size:34px;">${name.split("@")[0]}</span></span></strong></span></p>
 </div>
 </div>
 </td>

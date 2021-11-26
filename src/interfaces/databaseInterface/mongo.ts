@@ -19,6 +19,7 @@ export interface IServers {
   owner:ObjectId
   serverName: string
   members:Array<GroupMembers>
+  inGroup:Boolean
   ip: string
   pkey: string
   createdAt: Date
