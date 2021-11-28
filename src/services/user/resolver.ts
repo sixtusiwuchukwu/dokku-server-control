@@ -1,7 +1,7 @@
 import {PubSub} from "apollo-server-express";
 import {Request, Response} from "express";
 import {cookieOptions} from "../../tools/config";
-import {requiresAuth} from "../../helper/permissions"
+import {requiresAuth,permitted} from "../../helper/permissions"
 
 const pubsub = new PubSub();
 
@@ -14,7 +14,6 @@ const UserMutation = {
 
   loginUser: async (root: any, data: object, {
     dataSources,
-    req,
     res
   }: { dataSources: { User: any }, req: Request, res: Response }) => {
     const {User} = dataSources;
@@ -24,14 +23,26 @@ const UserMutation = {
     return 'login completed'
   },
   // @ts-ignore
-  // updatePerson:requiresAuth.createResolver(async (root:any, data:object, { dataSources, req, res }: {dataSources:{User:any}, req: Request, res: Response})) => {
-  updatePerson: requiresAuth.createResolver(async (root: any, data: any, {
+  updatePerson: requiresAuth.createResolver(async (root: any, {data}: { data: any }, {
     dataSources,
     req
   }: { dataSources: any, req: any }) => {
     const {User} = dataSources;
     const {user} = req
+
     return await new User("s").updatePerson(data,user)
+
+
+  }),
+  // @ts-ignore
+  updatePassword: permitted.createResolver(async (root: any, data: { data: any }, {
+    dataSources,
+    req
+  }: { dataSources: any, req: any }) => {
+    const {User} = dataSources;
+    const {user} = req
+
+    return await new User("s").updatePassword(data,user)
 
 
   }),
@@ -39,16 +50,16 @@ const UserMutation = {
 const UserQuery = {
   getCurrentUser: async (root:any, { data }:{data:any}, { dataSources }: {dataSources:{User:any}}) => {
     const { User } = dataSources;
-    const newuser = await new User().joinGroup(data);
-    await pubsub.publish(NEW_USER, { newUser: newuser });
-    return newuser;
+    const newUser = await new User().joinGroup(data);
+    await pubsub.publish(NEW_USER, { newUser: newUser });
+    return newUser;
   },
 };
 
 const UserSubscription = {
   newUser: {
     subscribe: async (root:any, args:any, context:any) => {
-      return await pubsub.asyncIterator(NEW_USER);
+      return  pubsub.asyncIterator(NEW_USER);
     },
   },
 };

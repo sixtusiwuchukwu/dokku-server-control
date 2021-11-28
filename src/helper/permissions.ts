@@ -1,4 +1,5 @@
-import {ValidationError, AuthenticationError, ForbiddenError} from "apollo-server-express";
+import {AuthenticationError, ForbiddenError, ValidationError} from "apollo-server-express";
+import __Server from "../models/servers/servers"
 
 const createResolver = (resolver: (parent: any, args: any, context: any, info: any) => void) => {
   const baseResolver = resolver;
@@ -25,13 +26,17 @@ export const requiresAdmin = (requiresAuth as any).createResolver((parent: any, 
   }
 });
 
-export const permitted = (requiresAuth as any).createResolver((parent: any, args:any, context:any, info:any)=> {
-  const permissions = ["startDokkuApp", "stopServer", "listServers"]
+export const permitted = (requiresAuth as any).createResolver(async (parent: any, {data}: any, context: any, info: any) => {
+  const {req: {user}} = context
 
-  if(!permissions.includes(info.fieldName)){
+  const isPermitted = await __Server.findOne({$or:[{
+    _id:data?.serverId,
+    "members.email": user?.email,
+    "members.permission": {"$in": [info.fieldName]}
+  },{_id: data?.serverId,owner:user?._id}]})
+
+
+  if (!isPermitted) {
     throw new ForbiddenError('operation not allowed')
   }
-  // if(!context?.req?.user?.permissions?.includes("")){
-  //   throw new ForbiddenError('operation not allowed')
-  // }
 })
