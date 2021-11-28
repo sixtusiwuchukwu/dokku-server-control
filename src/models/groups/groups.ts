@@ -4,7 +4,7 @@ import groupMembers from "../../models/reusableSchema/members"
 
 
 const GroupSchema = new Schema<Group>({
-  name:{
+  groupName:{
     type:String,
     required:true,
     unique:true,

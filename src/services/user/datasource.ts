@@ -17,6 +17,8 @@ class UserDatasource extends Base {
     const code = await this.getCodeNumber('uc', __User)
     await __User.create({...data, code})
 
+    await  this.sendMail("deeptech@gmail.com","sixtusiwuchukwu21@gmail.com","welcome","welcome",{name:user.email})
+
     return "Successfully created an Account"
   }
 

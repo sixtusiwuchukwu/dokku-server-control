@@ -13,7 +13,7 @@ const ServerQuery = {
   // @ts-ignore
   listUserServers:  requiresAuth.createResolver(async (root:any, data:any , { dataSources,req }:{dataSources: { ServerControl:any }}) => {
     const { ServerControl } = dataSources;
-    return await new ServerControl().listUserServers(req.user);
+    return await new ServerControl().listUserServers(data,req.user);
   }),
   // @ts-ignore
   listServerMembers:  requiresAuth.createResolver(async (root:any, {data}:any , { dataSources,req }:{dataSources: { ServerControl:any }}) => {
@@ -42,19 +42,25 @@ const ServerMutations = {
   changeServerOwnership: permitted.createResolver(async (root:any, { data }:{data:changeServerOwnershipInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
     const { ServerControl } = dataSources;
 
-    return await new ServerControl("d").changeServerOwnership(data);
+    return await new ServerControl("d").changeServerOwnership(data,req.user);
   }),
   // @ts-ignore
-  importServerToGroup: permitted.createResolver(async (root:any, { data }:{data:importServerToGroupInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
+  importServerToGroup: requiresAuth.createResolver(async (root:any, { data }:{data:importServerToGroupInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
     const { ServerControl } = dataSources;
 
     return await new ServerControl("d").importServerToGroup(data,req.user);
   }),
   // @ts-ignore
-  deleteServer: permitted.createResolver(async (root:any, { data }:{data:importServerToGroupInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
+  deleteServer: permitted.createResolver(async (root:any,  data :{data:importServerToGroupInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
     const { ServerControl } = dataSources;
 
     return await new ServerControl("d").deleteServer(data,req.user);
+  }),
+  // @ts-ignore
+  removeServerMember: permitted.createResolver(async (root:any,  data :{data:removeServerMemberInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
+    const { ServerControl } = dataSources;
+
+    return await new ServerControl("d").removeServerMember(data,req.user);
   }),
 
 

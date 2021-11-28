@@ -19,6 +19,7 @@ export interface IServers {
   owner:ObjectId
   serverName: string
   members:Array<GroupMembers>
+  inGroup:Boolean
   ip: string
   pkey: string
   createdAt: Date
@@ -51,7 +52,7 @@ export interface  Person {
 }
 export interface Group {
   _id:ObjectId
-  name:string
+  groupName:string
   members:Array<GroupMembers>
   servers:Array<ObjectId>
   owner:ObjectId
