@@ -1,5 +1,6 @@
 import {AuthenticationError, ForbiddenError, ValidationError} from "apollo-server-express";
 import __Server from "../models/servers/servers"
+import __Group from "../models/groups/groups"
 
 const createResolver = (resolver: (parent: any, args: any, context: any, info: any) => void) => {
   const baseResolver = resolver;
@@ -26,17 +27,32 @@ export const requiresAdmin = (requiresAuth as any).createResolver((parent: any, 
   }
 });
 
-export const permitted = (requiresAuth as any).createResolver(async (parent: any, {data}: any, context: any, info: any) => {
+export const serverPermit = (requiresAuth as any).createResolver(async (parent: any, {data}: any, context: any, info: any) => {
   const {req: {user}} = context
 
-  const isPermitted = await __Server.findOne({$or:[{
+  const isPermit = await __Server.findOne({$or:[{
     _id:data?.serverId,
     "members.email": user?.email,
     "members.permission": {"$in": [info.fieldName]}
   },{_id: data?.serverId,owner:user?._id}]})
 
 
-  if (!isPermitted) {
+  if (!isPermit) {
+    throw new ForbiddenError('operation not allowed')
+  }
+})
+
+export const groupPermit = (requiresAuth as any).createResolver(async (parent: any, {data}: any, context: any, info: any) => {
+  const {req: {user}} = context
+
+  const isPermit = await __Group.findOne({$or:[{
+    _id:data?.groupId,
+    "members.email": user?.email,
+    "members.permission": {"$in": [info.fieldName]}
+  },{_id: data?.groupId,owner:user?._id}]})
+
+
+  if (!isPermit) {
     throw new ForbiddenError('operation not allowed')
   }
 })

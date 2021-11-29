@@ -1,7 +1,7 @@
 import {PubSub} from "apollo-server-express";
 import {Request, Response} from "express";
 import {cookieOptions} from "../../tools/config";
-import {requiresAuth,permitted} from "../../helper/permissions"
+import {requiresAuth,serverPermit} from "../../helper/permissions"
 
 const pubsub = new PubSub();
 
@@ -35,7 +35,7 @@ const UserMutation = {
 
   }),
   // @ts-ignore
-  updatePassword: permitted.createResolver(async (root: any, data: { data: any }, {
+  updatePassword: serverPermit.createResolver(async (root: any, data: { data: any }, {
     dataSources,
     req
   }: { dataSources: any, req: any }) => {

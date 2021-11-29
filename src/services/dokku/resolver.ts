@@ -1,4 +1,4 @@
-import {permitted, requiresAuth} from "../../helper/permissions";
+import {serverPermit, requiresAuth} from "../../helper/permissions";
 import DokkuAppControl from "./datasource";
 
 const MESSAGE_SENT : string = "MESSAGE_SENT";

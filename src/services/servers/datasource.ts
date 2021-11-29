@@ -100,7 +100,7 @@ class ServerControl extends Base {
 
   }
 
-  async listServerMembers(data: any, user: any) {
+  async listServerMembers(data: any) {
 
     let {members} = await __Server.findById(data.serverId).select("members")
     if (!members) {
@@ -109,7 +109,6 @@ class ServerControl extends Base {
     // @ts-ignore
     if (members.length === 0) return []
     return members
-
   }
 
   async importServerToGroup(data: any, user: any) {
