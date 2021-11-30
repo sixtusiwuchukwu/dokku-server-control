@@ -4,7 +4,7 @@ import groupMembers from "../../models/reusableSchema/members"
 
 
 const GroupSchema = new Schema<Group>({
-  name:{
+  groupName:{
     type:String,
     required:true,
     unique:true,
@@ -14,12 +14,19 @@ const GroupSchema = new Schema<Group>({
     type:[groupMembers]
   },
   servers:{
-    type: [Schema.Types.ObjectId]
+    type: [Schema.Types.ObjectId],
+    ref:"server"
   },
   owner:{
     type:Schema.Types.ObjectId,
     required: true,
     index: true
+  },
+  status:{
+    type:String,
+    enum: ["deleted","active"],
+    default:"active",
+    index:true,
   }
 },{timestamps:true})
 

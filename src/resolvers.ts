@@ -8,6 +8,10 @@ import {
   ServerMutations,
   ServerSubscription,
 } from "./services/servers/resolver";
+import {
+  GroupQuery,
+  GroupMutation,
+} from "./services/group/resolver";
 
 import {
   DokkuAppMutations
@@ -17,10 +21,12 @@ const removeFromList = ["loginUser", 'addUser']
 const Mutation = {
   ...UserMutation,
   ...ServerMutations,
-  ...DokkuAppMutations
+  ...DokkuAppMutations,
+  ...GroupMutation
 };
 const Query = {
   ...ServerQuery,
+  ...GroupQuery
 };
 const Subscription = {
   ...UserSubscription,

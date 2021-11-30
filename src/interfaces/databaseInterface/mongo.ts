@@ -19,10 +19,12 @@ export interface IServers {
   owner:ObjectId
   serverName: string
   members:Array<GroupMembers>
+  inGroup:Boolean
   ip: string
   pkey: string
   createdAt: Date
   updatedAt: Date
+  status:string
 }
 export interface IUser {
   _id:ObjectId
@@ -51,12 +53,22 @@ export interface  Person {
 }
 export interface Group {
   _id:ObjectId
-  name:string
+  groupName:string
   members:Array<GroupMembers>
   servers:Array<ObjectId>
+  status:string
   owner:ObjectId
   updatedAt:Date
   createdAt:Date
+}
+
+export interface Logs {
+  _id:ObjectId
+  user:ObjectId
+  serviceName:string
+  ip:string
+  createdAt:Date
+  updateAt:Date
 }
 
 

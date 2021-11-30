@@ -7,10 +7,11 @@ const PostTypes = gql`
         changeServerOwnership(data:newOwnerInput):String!
         importServerToGroup(data:importServerToGroupInput):String!
         deleteServer(data:deleteServerInput):String!
+        removeServerMember(data:removeServerMemberInput):String!
     }
     extend type Query {
         listServers(page: Int! search: String): serverListPagination
-        listUserServers:[servers]!
+        listUserServers(page: Int! search: String): serverListPagination!
         listServerMembers(data:listServerMembersInput):[members]
     }
   
@@ -67,6 +68,10 @@ const PostTypes = gql`
     }
     input listServerMembersInput{
         serverId:ID
+    }
+    input removeServerMemberInput {
+        serverId:ID
+        memberEmail:String
     }
  
 `;

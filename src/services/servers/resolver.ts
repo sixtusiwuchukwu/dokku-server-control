@@ -1,11 +1,11 @@
-import {serverPermit,requiresAuth} from "../../helper/permissions";
+import {serverPermit, requiresAuth, requiresAdmin} from "../../helper/permissions";
 import {IAddServerInterface,AddServerMemberInterface ,changeServerOwnershipInterface,importServerToGroupInterface} from "../../interfaces/DataSources/server";
 
 const MESSAGE_SENT : string= "MESSAGE_SENT";
 
 const ServerQuery = {
   // @ts-ignore
-  listServers:  serverPermit.createResolver(async (root:any, data:any , { dataSources }:{dataSources: { ServerControl:any }}) => {
+  listServers:  requiresAdmin.createResolver(async (root:any, data:any , { dataSources }:{dataSources: { ServerControl:any }}) => {
     const { ServerControl } = dataSources;
     return await new ServerControl().listServers(data);
   }),
@@ -13,7 +13,7 @@ const ServerQuery = {
   // @ts-ignore
   listUserServers:  requiresAuth.createResolver(async (root:any, data:any , { dataSources,req }:{dataSources: { ServerControl:any }}) => {
     const { ServerControl } = dataSources;
-    return await new ServerControl().listUserServers(req.user);
+    return await new ServerControl().listUserServers(data,req.user);
   }),
   // @ts-ignore
   listServerMembers:  requiresAuth.createResolver(async (root:any, {data}:any , { dataSources,req }:{dataSources: { ServerControl:any }}) => {
@@ -42,19 +42,25 @@ const ServerMutations = {
   changeServerOwnership: serverPermit.createResolver(async (root:any, { data }:{data:changeServerOwnershipInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
     const { ServerControl } = dataSources;
 
-    return await new ServerControl("d").changeServerOwnership(data);
+    return await new ServerControl("d").changeServerOwnership(data,req.user);
   }),
   // @ts-ignore
-  importServerToGroup: serverPermit.createResolver(async (root:any, { data }:{data:importServerToGroupInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
+  importServerToGroup: requiresAuth.createResolver(async (root:any, { data }:{data:importServerToGroupInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
     const { ServerControl } = dataSources;
 
     return await new ServerControl("d").importServerToGroup(data,req.user);
   }),
   // @ts-ignore
-  deleteServer: serverPermit.createResolver(async (root:any, { data }:{data:importServerToGroupInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
+  deleteServer: serverPermit.createResolver(async (root:any,  data :{data:importServerToGroupInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
     const { ServerControl } = dataSources;
 
     return await new ServerControl("d").deleteServer(data,req.user);
+  }),
+  // @ts-ignore
+  removeServerMember: serverPermit.createResolver(async (root:any,  data :{data:removeServerMemberInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
+    const { ServerControl } = dataSources;
+
+    return await new ServerControl("d").removeServerMember(data,req.user);
   }),
 
 

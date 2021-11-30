@@ -40,8 +40,7 @@ export const serverPermit = (requiresAuth as any).createResolver(async (parent: 
   if (!isPermit) {
     throw new ForbiddenError('operation not allowed')
   }
-})
-
+});
 export const groupPermit = (requiresAuth as any).createResolver(async (parent: any, {data}: any, context: any, info: any) => {
   const {req: {user}} = context
 

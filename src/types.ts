@@ -1,6 +1,7 @@
 import { gql }from"apollo-server-express";
 import UserSchema from "./services/user/types";
-import PostSchema from "./services/servers/types";
+import ServerSchema from "./services/servers/types";
+import GroupSchema from "./services/group/types";
 import dokkuGql from "./services/dokku/types";
 
 // Types bootstrapper
@@ -24,4 +25,4 @@ const linkSchemas = gql`
   }
 `;
 
-export default [linkSchemas, UserSchema, PostSchema,dokkuGql];
+export default [linkSchemas, UserSchema, ServerSchema,dokkuGql,GroupSchema];
