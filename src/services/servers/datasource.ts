@@ -15,6 +15,7 @@ class ServerControl extends Base {
     const query: any = {};
     if (search) {
       query["serverName"] = {$regex: search, $options: "ig"};
+      query["status"] = "active"
     }
     const options = {
       page: page,
@@ -32,6 +33,7 @@ class ServerControl extends Base {
   async addServer(data: IAddServerInterface, user: any) {
     try {
       const {username, host, pkey, port} = data;
+      // let ip = {address:"192.168.13"}
       const ip = await this.lookUp(host)
       const isExits = await __Server.findOne({$or: [{ip: ip.address}, {serverName: data.serverName}]})
       if (isExits) throw new UserInputError('Server name or Ip Already exist')
@@ -79,10 +81,12 @@ class ServerControl extends Base {
   async listUserServers({search,page}:any,user: any) {
 
     const query: any = {};
+    query["status"] = "active"
     if (search) {
       query["serverName"] = {$regex: search, $options: "ig"};
       query["owner"] = user._id;
       query["inGroup"] = false
+      query["status"] = "active"
     }
     const options = {
       page: page,
@@ -107,6 +111,9 @@ class ServerControl extends Base {
 
     if (!isUser) throw new UserInputError("user not found")
     foundServer.owner = isUser._id
+    // @ts-ignore
+    foundServer.InGroup = false
+
     foundServer.inGroup = false
 
     await foundServer.save()
@@ -115,7 +122,7 @@ class ServerControl extends Base {
 
   }
 
-  async listServerMembers(data: any, user: any) {
+  async listServerMembers(data: any) {
 
     let {members} = await __Server.findById(data.serverId).select("members")
     if (!members) {
@@ -148,6 +155,11 @@ class ServerControl extends Base {
 
   async deleteServer(data: any, user: any) {
     const {serverId} = data
+    let foundServer = await __Server.findOne({_id:serverId, owner: user._id,})
+    if (!foundServer) {
+      return "server not found"
+    }
+    foundServer.status = "deleted"
     await __Server.findOneAndDelete({_id: serverId, owner: user._id},)
 
     return "Deleted Successfully"

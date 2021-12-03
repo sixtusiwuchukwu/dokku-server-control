@@ -1,19 +1,20 @@
 const {gql} = require("apollo-server-express");
 
-const PostTypes = gql`
+const GroupTypes = gql`
     extend type Mutation {
         addGroup(data: groupInput): String!
         addGroupMember(data:addGroupMemberInput):String!
         addGroupServer(data:addGroupServerInput):String
         changeGroupOwnership(data:newOwnerInput):String!
         deleteGroup(data:deleteGroupInput):String!
-        deleteGroupServer(data:deleteGroupInput):String!
+        deleteGroupServer(data:deleteGroupServerInput):String!
         removeGroupMember(data:removeGroupMemberInput):String!
     }
     extend type Query {
         listGroups(page: Int! search: String): groupListPagination
         listUserGroups:[groups]!
         listGroupMembers(data:listGroupMembersInput):[groupMembers]
+        listGroupServers(data:listGroupServersInput):[servers]
     }
 
     
@@ -67,7 +68,15 @@ const PostTypes = gql`
         groupId:ID!
         memberEmail:ID!
     }
+    
+    input deleteGroupServerInput {
+        groupId:ID!
+        serverId:ID!
+    }
+    input listGroupServersInput {
+        groupId:ID
+    }
 
 `;
 
-export default PostTypes;
+export default GroupTypes;

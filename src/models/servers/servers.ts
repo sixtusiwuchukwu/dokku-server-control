@@ -42,6 +42,12 @@ const ServesSchema = new Schema<IServers>({
   inGroup:{
     type:Boolean,
     default:false
+  },
+  status:{
+    type:String,
+    enum:["deleted","active"],
+    default:"active",
+    index:true
   }
 }, {
   timestamps: true

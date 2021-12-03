@@ -5,6 +5,8 @@ import __Server from "../../models/servers/servers"
 import {UserInputError} from "apollo-server-express";
 import {IListServersInterface} from "../../interfaces/DataSources/server";
 import __User from "../../models/user/user";
+import mongoose from "mongoose";
+import servers from "../../models/servers/servers";
 
 
 class GroupControl extends Base {
@@ -24,7 +26,7 @@ class GroupControl extends Base {
       if (!foundGroup) throw new UserInputError("group not found")
 
       const ip = await this.lookUp(host)
-      // let ip = {address:"192.168.963"}
+      // let ip = {address:"192.168.964"}
 
       const foundServer = await __Server.findOne({$or: [{ip: ip.address}, {serverName: data.serverName}]})
 
@@ -57,8 +59,10 @@ class GroupControl extends Base {
 
   async listGroups({search, page}: IListServersInterface) {
     const query: any = {};
+    query["status "] = "active"
     if (search) {
       query["groupName"] = {$regex: search, $options: "ig"};
+      query["status"] = "active"
     }
     const options = {
       page: page,
@@ -135,6 +139,47 @@ class GroupControl extends Base {
     return "member removed successfully"
 
   }
+
+  async deleteGroupServer(data: any, user: any) {
+    let foundServer = await __Server.findOne({_id: data.serverId, owner: user._id,})
+    if (!foundServer) {
+      return "server not found"
+    }
+    foundServer.status = "deleted"
+    await foundServer.save()
+    return "server removed successfully"
+  }
+
+  async deleteGroup(data: any, user: any) {
+    let foundGroup = await __Group.findOne({_id: data.serverId, owner: user._id,})
+    if (!foundGroup) {
+      return "Group not found"
+    }
+    foundGroup.status = "deleted"
+    await foundGroup.save()
+    return "Group removed successfully"
+  }
+
+  async listGroupServers(data: any, user: any) {
+
+    const servers = await __Group.aggregate([
+      {
+        '$match': {
+          '_id':  mongoose.Types.ObjectId(data.groupId)
+        }
+      }, {
+        '$lookup': {
+          'from': 'servers',
+          'localField': 'servers',
+          'foreignField': '_id',
+          'as': 'servers'
+        },
+      },
+      {"$project":{servers:1}}
+    ]);
+    return servers[0]?.servers || []
+  }
+
 }
 
 export default GroupControl;
