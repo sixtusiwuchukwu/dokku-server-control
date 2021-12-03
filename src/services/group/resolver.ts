@@ -1,40 +1,42 @@
 import {groupPermit, requiresAdmin, requiresAuth} from "../../helper/permissions";
 
+
 const GroupQuery = {
   // @ts-ignore
-  listGroups: requiresAdmin.createResolver(async (root: any, data:any, {
+  listGroups: requiresAdmin.createResolver(async (root: any, data: any, {
     dataSources,
-  }: { dataSources: { GroupControl: any },req:any}) => {
+  }: { dataSources: { GroupControl: any }, req: any }) => {
     const {GroupControl} = dataSources;
     return await new GroupControl().listGroups(data)
   }),
 
   // @ts-ignore
-  listUserGroups: requiresAuth.createResolver(async (root: any, data:any, {
+  listUserGroups: requiresAuth.createResolver(async (root: any, data: any, {
     dataSources,
     req
-  }: { dataSources: { GroupControl: any },req:any}) => {
+  }: { dataSources: { GroupControl: any }, req: any }) => {
     const {GroupControl} = dataSources;
     return await new GroupControl().listUserGroups(req.user)
   }),
 
   // @ts-ignore
-  listGroupMembers: requiresAuth.createResolver(async (root: any, {data}:any, {
+  listGroupMembers: requiresAuth.createResolver(async (root: any, {data}: any, {
     dataSources,
     req
-  }: { dataSources: { GroupControl: any },req:any}) => {
+  }: { dataSources: { GroupControl: any }, req: any }) => {
     const {GroupControl} = dataSources;
-    return await new GroupControl().listGroupMembers(data,req.user)
+    return await new GroupControl().listGroupMembers(data, req.user)
   }),
 
   // @ts-ignore
-  listGroupServers: groupPermit.createResolver(async (root: any, {data}: { data:any }, {
+  listGroupServers: groupPermit.createResolver(async (root: any, {data}: { data: any }, {
     dataSources,
     req
-  }: { dataSources: { GroupControl: any },req:any}) => {
+  }: { dataSources: { GroupControl: any }, req: any }) => {
     const {GroupControl} = dataSources;
-    return await new GroupControl().listGroupServers(data,req.user)
+    return await new GroupControl().listGroupServers(data, req.user)
   }),
+
 }
 const GroupMutation = {
 

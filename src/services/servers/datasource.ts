@@ -114,6 +114,8 @@ class ServerControl extends Base {
     // @ts-ignore
     foundServer.InGroup = false
 
+    foundServer.inGroup = false
+
     await foundServer.save()
 
     return "server ownership changed"
@@ -129,6 +131,7 @@ class ServerControl extends Base {
     // @ts-ignore
     if (members.length === 0) return []
     return members
+
   }
 
   async importServerToGroup(data: any, user: any) {
@@ -157,6 +160,8 @@ class ServerControl extends Base {
       return "server not found"
     }
     foundServer.status = "deleted"
+    await __Server.findOneAndDelete({_id: serverId, owner: user._id},)
+
     return "Deleted Successfully"
 
   }

@@ -1,6 +1,4 @@
-const ejs = require('ejs');
-const fs = require('fs');
-const {NodeSSH} = require("node-ssh");
+const { NodeSSH } = require("node-ssh");
 const ids = require('short-id');
 import dns from 'dns/promises'
 import {Model, ObjectId} from 'mongoose';
