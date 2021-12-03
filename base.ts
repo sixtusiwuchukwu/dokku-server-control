@@ -1,14 +1,14 @@
-const ejs = require( 'ejs' );
-const fs = require( 'fs' );
+const ejs = require('ejs');
+const fs = require('fs');
 const {NodeSSH} = require("node-ssh");
 const ids = require('short-id');
 import dns from 'dns/promises'
-import {Model} from 'mongoose';
+import {Model, ObjectId} from 'mongoose';
 import nodemailer from 'nodemailer'
 import {UserInputError} from "apollo-server-express";
 import {isDev, MAIL_HOST, MAIL_PASS, MAIL_PORT, MAIL_USER} from "./src/tools/config";
 import {WelcomeTemplate} from "./src/utils/emailTemplate/welcome"
-import path from "path";
+import __Log from "./src/models/logs/logs"
 
 class Base {
   async lookUp(host: string) {
@@ -102,6 +102,12 @@ class Base {
     while (codeCheck);
     return `${name}${code}`;
   }
+
+  async Log({serviceName, user, ip = ""}: { serviceName: string, user: ObjectId, ip?: string }) {
+    await __Log.create({serviceName, user, ip})
+   return
+  }
+
 }
 
 export default Base;

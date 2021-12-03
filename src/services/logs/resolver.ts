@@ -5,7 +5,8 @@ const LogsQuery = {
     const {LogControl} = dataSources
     return await new LogControl().getLogs(data)
   }),
-  getUserLogs: requiresAdmin.createResolver(async (root: any, data: any, {dataSources}: { dataSources: { LogControl: any }, req: any }) => {
+  //@ts-ignore
+  getUserLogs: requiresAuth.createResolver(async (root: any, data: any, {dataSources}: { dataSources: { LogControl: any }, req: any }) => {
     const {LogControl} = dataSources
     return await new LogControl().getUserLogs(data)
   })
