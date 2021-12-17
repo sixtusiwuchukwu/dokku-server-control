@@ -71,4 +71,8 @@ export interface Logs {
   updateAt:Date
 }
 
+export interface permissionInterface {
+  permission:string
+}
+
 
