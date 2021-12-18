@@ -48,7 +48,10 @@ const ServesSchema = new Schema<IServers>({
     enum:["deleted","active"],
     default:"active",
     index:true
-  }
+  },
+  plugin:[{
+    type:Schema.Types.ObjectId
+  }]
 }, {
   timestamps: true
 });

@@ -1,7 +1,7 @@
 import {model, Schema} from "mongoose"
-import {permissionInterface} from "../../interfaces/databaseInterface/mongo";
+import {PermissionInterface} from "../../interfaces/databaseInterface/mongo";
 
-const PermissionLists = new Schema<permissionInterface>({
+const PermissionLists = new Schema<PermissionInterface>({
 
   permission: {
     type: String,
@@ -14,4 +14,4 @@ const PermissionLists = new Schema<permissionInterface>({
   timestamps: true
 })
 
-export default model<permissionInterface>("allPermission", PermissionLists)
+export default model<PermissionInterface>("allPermission", PermissionLists)
