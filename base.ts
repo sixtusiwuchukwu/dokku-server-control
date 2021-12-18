@@ -1,3 +1,5 @@
+import * as fs from "fs";
+const  ejs = require("ejs")
 const { NodeSSH } = require("node-ssh");
 const ids = require('short-id');
 import dns from 'dns/promises'
@@ -7,6 +9,7 @@ import {UserInputError} from "apollo-server-express";
 import {isDev, MAIL_HOST, MAIL_PASS, MAIL_PORT, MAIL_USER} from "./src/tools/config";
 import {WelcomeTemplate} from "./src/utils/emailTemplate/welcome"
 import __Log from "./src/models/logs/logs"
+import * as path from "path";
 
 class Base {
   async lookUp(host: string) {
@@ -48,19 +51,14 @@ class Base {
   async getTemplate(templateName: string) {
     const selection: any = {
       welcome: WelcomeTemplate,
+      activation : fs.readFileSync( path.join( process.cwd() , '/src/tools/emailTemplate/activation.ejs' ) ).toString(),
+      invoice : fs.readFileSync( path.join( process.cwd() , '/src/tools/emailTemplate/invoice.ejs' ) ).toString(),
     };
     const acceptedType = ["welcome"];
     if (!acceptedType.includes(templateName)) throw new Error(`Unknown email template type expected one of ${acceptedType} but got ${templateName}`);
     return selection[templateName]
 
-    // const selection = {
-    //   activation : fs.readFileSync( path.join( process.cwd() , '/src/tools/emailTemplate/activation.ejs' ) ).toString(),
-    //   invoice : fs.readFileSync( path.join( process.cwd() , '/src/tools/emailTemplate/invoice.ejs' ) ).toString(),
-    //   "alart_trasaction" : fs.readFileSync( path.join( process.cwd() , '/src/tools/emailTemplate/alart_trasaction.ejs' ) ).toString(),
-    // };
-    // const acceptedType = [ "activation" , "transaction" , "invoice" , "forgotPassword", "support", "alart_trasaction" ];
-    // if ( !acceptedType.includes( template ) ) throw new Error( `Unknown email template type expected one of ${ acceptedType } but got ${ template }` );
-    // return  ejs.compile( selection[ template ] , opts || {} )( data );
+    // return  ejs.compile( selection[ template ] , opts || {} )( data )
   }
 
 

@@ -25,6 +25,7 @@ export interface IServers {
   createdAt: Date
   updatedAt: Date
   status:string
+  plugin:Array<string>
 }
 export interface IUser {
   _id:ObjectId
@@ -70,5 +71,16 @@ export interface Logs {
   createdAt:Date
   updateAt:Date
 }
+
+export interface PermissionInterface {
+  permission:string
+}
+
+export interface PluginsInterface {
+  name:string
+  url:string
+  command:Array<string>
+}
+
 
 
