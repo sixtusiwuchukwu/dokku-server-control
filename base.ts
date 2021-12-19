@@ -7,11 +7,11 @@ import {Model, ObjectId} from 'mongoose';
 import nodemailer from 'nodemailer'
 import {UserInputError} from "apollo-server-express";
 import {isDev, MAIL_HOST, MAIL_PASS, MAIL_PORT, MAIL_USER} from "./src/tools/config";
-import {WelcomeTemplate} from "./src/utils/emailTemplate/welcome"
 import __Log from "./src/models/logs/logs"
 import * as path from "path";
+import Validation from "./src/Validations/Validations";
 
-class Base {
+class Base extends Validation{
   async lookUp(host: string) {
     try {
       return await dns.lookup(host)
@@ -20,62 +20,43 @@ class Base {
     }
   }
 
-  async sendMailConfig() {
-    let mailConfig;
-    if (!isDev) {
-      // all emails are delivered to destination
+   sendMailConfig() {
+    const mailConfig = {
+       host: MAIL_HOST,
+         port: MAIL_PORT,
+         auth: {
+         user: MAIL_USER,
+           pass: MAIL_PASS
+       }
+     };
+    return nodemailer.createTransport(mailConfig as object);
+  }
 
-      mailConfig = {
-        // @ts-ignore
-        host: MAIL_HOST,
-        port: MAIL_PORT,
-        auth: {
-          user: MAIL_USER,
-          pass: MAIL_PASS
-        }
-      };
-    } else {
-      // all emails are catched by ethereal.email
-      mailConfig = {
-        host: 'smtp.ethereal.email',
-        port: 587,
-        auth: {
-          user: 'dan.treutel1@ethereal.email',
-          pass: 'wC4wacY3unRpPPxaCB'
-        }
-      };
+   getTemplate(templateName: string, data:object) {
+    const selection: { invoice: string; activation: string; welcome: string } = {
+      welcome: templateName === "welcome" && fs.readFileSync(  path.join(process.cwd() ,"src","utils","emailTemplate","welcome.ejs") ).toString(),
+      activation : templateName === "activation" && fs.readFileSync( path.join(process.cwd(),"src","utils","emailTemplate","activation.ejs")  ).toString(),
+      invoice : templateName === "invoice" && fs.readFileSync(path.join(process.cwd(),"src","utils","emailTemplate","invoice.ejs")).toString(),
     }
-    return nodemailer.createTransport(mailConfig);
-  }
-
-  async getTemplate(templateName: string) {
-    const selection: any = {
-      welcome: WelcomeTemplate,
-      activation : fs.readFileSync( path.join( process.cwd() , '/src/tools/emailTemplate/activation.ejs' ) ).toString(),
-      invoice : fs.readFileSync( path.join( process.cwd() , '/src/tools/emailTemplate/invoice.ejs' ) ).toString(),
-    };
-    const acceptedType = ["welcome"];
-    if (!acceptedType.includes(templateName)) throw new Error(`Unknown email template type expected one of ${acceptedType} but got ${templateName}`);
-    return selection[templateName]
-
-    // return  ejs.compile( selection[ template ] , opts || {} )( data )
+    if (!Object.keys(selection).includes(templateName)) throw new Error(`Unknown email template type expected one of ${JSON.stringify(Object.keys(selection))} but got ${templateName}`);
+    let template = ejs.compile((selection[templateName as keyof typeof selection]), {});
+    return template(data)
   }
 
 
-  async sendMail(from: string, to: string, subject: string, TemplateName: string, option: any) {
-
-    const template = this.getTemplate(TemplateName.toLowerCase())
-
+   sendMail(to: string, subject: string, TemplateName: string, data?: any, from?:string) {
     const info = {
-      from,
+      from: from ? from :  '"DSPMS" <no-reply@dspms.net>',
       to,
       subject: subject.toUpperCase(),
-      html: (await template)(option),
+      html: this.getTemplate(TemplateName.toLowerCase(), data),
     };
 
-    (await this.sendMailConfig()).sendMail(info).then(info => {
+     this.sendMailConfig().sendMail(info).then(info => {
       console.log('Preview URL: ' + nodemailer.getTestMessageUrl(info));
-    });
+    }).catch((e)=>{
+       console.error(e,`Error ending email to ${to}`)
+     });
   }
 
   RemoteServer(host: string, username: string, pkey: string, port: number = 22): Promise<void> {

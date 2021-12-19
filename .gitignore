@@ -25,3 +25,6 @@ yarn-debug.log*
 yarn-error.log*
 deeptech.pem
 .idea
+.env
+test.js
+card_transactions.json
