@@ -16,9 +16,8 @@ class UserDatasource extends Base {
     const user = await __User.findOne({email})
     if (user) throw new UserInputError('email, already exist');
     const code = await this.getCodeNumber('uc', __User)
-     const account = await __User.create({...data, code})
-
-    this.sendMail(account.email,"Welcome To DSPM","welcome", {name:account.email.split('@')[0]})
+    const account = await __User.create({...data, code})
+    this.sendMail(account.email, "Welcome To DSPM", "welcome", {name: account.email.split('@')[0]})
     return "Successfully created an Account"
   }
 
@@ -49,14 +48,14 @@ class UserDatasource extends Base {
     return "updates successful"
   }
 
-  async updatePassword({oldPassword,newPassword}:{oldPassword:string, newPassword:string}, person: Person) {
+  async updatePassword({oldPassword, newPassword}: { oldPassword: string, newPassword: string }, person: Person) {
     const NotFound: string = "User not found";
 
     const user = await __User.findById({_id: person._id});
     if (!user) throw new UserInputError(NotFound)
 
-    let isPassword = await (__User as any).comparePassword(user.password,oldPassword)
-    if(!isPassword) throw new UserInputError(NotFound)
+    let isPassword = await (__User as any).comparePassword(user.password, oldPassword)
+    if (!isPassword) throw new UserInputError(NotFound)
 
     user.password = newPassword
 
