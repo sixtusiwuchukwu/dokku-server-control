@@ -43,6 +43,7 @@
     "@types/node": "^16.9.6",
     "@types/nodemailer": "^6.4.4",
     "@types/ssh2": "^0.5.48",
+    "@types/yup": "^0.29.13",
     "node-notifier": "^10.0.0",
     "short-id": "^0.0.0",
     "ts-node-dev": "^1.1.8",

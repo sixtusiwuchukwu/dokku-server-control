@@ -32,6 +32,8 @@ export interface IUser {
   email:string
   password: string
   code:string
+  lastReset:Date
+  username: string
   accountType: accountType
   createdAt: Date
   updatedAt: Date

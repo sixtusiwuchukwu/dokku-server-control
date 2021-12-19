@@ -11,14 +11,14 @@ class UserDatasource extends Base {
   }
 
   async addUser(data: IUser) {
+    await this.userValidation(data)
     const {email} = data;
     const user = await __User.findOne({email})
     if (user) throw new UserInputError('email, already exist');
     const code = await this.getCodeNumber('uc', __User)
-    await __User.create({...data, code})
+     const account = await __User.create({...data, code})
 
-    await  this.sendMail("deeptech@gmail.com","sixtusiwuchukwu21@gmail.com","welcome","welcome",{name:user.email})
-
+    this.sendMail(account.email,"Welcome To DSPM","welcome", {name:account.email.split('@')[0]})
     return "Successfully created an Account"
   }
 
@@ -26,16 +26,13 @@ class UserDatasource extends Base {
     const NotFound: string = "Invalid login credentials";
     const user = await __User.findOne({email});
     if (!user) throw new UserInputError(NotFound)
-    // @ts-ignore
 
-    const isPass = await __User.comparePassword(user.password, password)
+    const isPass = await (__User as any).comparePassword(user.password, password)
     if (!isPass) throw new UserInputError(NotFound);
 
-    // @ts-ignore
     return signJWT({lastReset: user.lastReset, username: user.username, email: user.email, _id: user._id}, '5s', "1h");
   }
 
-  // @ts-ignore
   async updatePerson(data: Person, person: Person) {
     const NotFound: string = "User not found";
     const user = await __User.findById({_id: person._id});
@@ -52,16 +49,13 @@ class UserDatasource extends Base {
     return "updates successful"
   }
 
-  // @ts-ignore
-  async updatePassword({oldPassword,newPassword}, person: Person) {
+  async updatePassword({oldPassword,newPassword}:{oldPassword:string, newPassword:string}, person: Person) {
     const NotFound: string = "User not found";
 
     const user = await __User.findById({_id: person._id});
     if (!user) throw new UserInputError(NotFound)
 
-
-  // @ts-ignore
-    let isPassword = await __User.comparePassword(user.password,oldPassword)
+    let isPassword = await (__User as any).comparePassword(user.password,oldPassword)
     if(!isPassword) throw new UserInputError(NotFound)
 
     user.password = newPassword
