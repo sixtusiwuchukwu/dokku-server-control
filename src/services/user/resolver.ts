@@ -31,7 +31,7 @@ const UserMutation = {
     const {User} = dataSources;
     const {user} = req
 
-    return await new User("s").updatePerson(data,user)
+    return await new User().updatePerson(data,user)
 
 
   }),

@@ -38,16 +38,10 @@ const UserTypes = gql`
     }
     
     input updatePersonInput{
-        _id: ID
-#        username: String
-#        email: String
         phone: String!
         firstName: String!
         lastName: String!
         permissions:[String!]!
-#        blackListCommands:[String]!
-#        whiteListCommands:[String]!
-#        allowedRoutes:[String!]
         address:[address]
     }
 
