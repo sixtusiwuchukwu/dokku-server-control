@@ -14,20 +14,20 @@ import cookieParser from 'cookie-parser'
 
 import {MONGO_URL, DOKKU_MONGO_AQUA_URL, isDev} from "./src/tools/config";
 import includeUser from "./src/helper/IncludeUser";
-
+const devOrigins:Array<string> = ["http://localhost:4000"]
+const Origins:Array<string> = [""]
+if(isDev) {
+  Origins.push(...devOrigins)
+}
 new db( console ).connect( MONGO_URL || DOKKU_MONGO_AQUA_URL );
 
-const { readFileSync } = require('fs');
-
-const { Client } = require('ssh2');
 
 
 // initialize app
 const app:Application = express();
-const homedir = require('os').homedir();
 
 app.use(cookieParser())
-app.use(cors);
+app.use(cors(Origins));
 app.use(includeUser);
 
 
@@ -61,7 +61,7 @@ const server = new ApolloServer({
 });
 // setting middleware
 
-server.applyMiddleware({ app, path: "/" });
+server.applyMiddleware({ app, path: "/", cors : false  });
 
 const httpServer: any = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);

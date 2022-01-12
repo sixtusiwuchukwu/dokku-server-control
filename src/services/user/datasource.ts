@@ -1,5 +1,5 @@
 import {IUser, Person} from "../../interfaces/databaseInterface/mongo";
-import {UserInputError} from "apollo-server-express";
+import {AuthenticationError, UserInputError} from "apollo-server-express";
 import __User from "../../models/user/user";
 import __Person from "../../models/user/person";
 import Base from "../../../base";
@@ -33,9 +33,9 @@ class UserDatasource extends Base {
   }
 
   async updatePerson(data: Person, person: Person) {
-    const NotFound: string = "User not found";
+    const NotFound: string = "Unable to validation authenticated account";
     const user = await __User.findById({_id: person._id});
-    if (!user) throw new UserInputError(NotFound)
+    if (!user) throw new AuthenticationError(NotFound)
 
     let foundPerson = await __Person.findOne({user: user._id});
 
