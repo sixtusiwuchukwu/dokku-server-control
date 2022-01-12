@@ -16,7 +16,7 @@ class UserDatasource extends Base {
     const user = await __User.findOne({email})
     if (user) throw new UserInputError('email, already exist');
     const code = await this.getCodeNumber('uc', __User)
-    const account = await __User.create({...data, code})
+    const account = await __User.create({...data,username: data.email.split('@')[0], code})
     this.sendMail(account.email, "Welcome To DSPM", "welcome", {name: account.email.split('@')[0]})
     return "Successfully created an Account"
   }

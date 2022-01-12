@@ -13,15 +13,13 @@ export default class DefaultScripts {
 
   async addDefaultAdmin() {
     const user: number = await __User.countDocuments()
-    const person: number = await __Person.countDocuments()
     let data: any = JSON.parse(defaultAdminAccount)
     let {email, password,accountType} = data
     delete data["password"]
 
     if (user > 0) return console.log('default account already created');
     const code: string = await new Base().getCodeNumber('uc', __User)
-     await __User.create({email,password,code,accountType})
-
+     await __User.create({email,password,code,accountType, username: email.split("@")[0]})
     console.log("Default Account Created")
   }
 

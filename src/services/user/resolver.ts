@@ -51,9 +51,7 @@ const UserMutation = {
 const UserQuery = {
   getCurrentUser: async (root:any, { data }:{data:any}, { dataSources }: {dataSources:{User:any}}) => {
     const { User } = dataSources;
-    const newUser = await new User().joinGroup(data);
-    await pubsub.publish(NEW_USER, { newUser: newUser });
-    return newUser;
+    return  await new User().getCurrentUser(data);
   },
 };
 
