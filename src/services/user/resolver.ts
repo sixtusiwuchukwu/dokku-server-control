@@ -1,7 +1,7 @@
 import {PubSub} from "apollo-server-express";
 import {Request, Response} from "express";
 import {cookieOptions} from "../../tools/config";
-import {createResolver, requiresAuth, serverPermit} from "../../helper/permissions"
+import {createResolver, serverPermit, CheckUserAuth} from "../../helper/permissions"
 import Base from "../../../base"
 const Log = new Base().Log
 const pubsub = new PubSub();
@@ -24,7 +24,7 @@ const UserMutation = {
     return 'login completed'
   }),
   // @ts-ignore
-  updatePerson: requiresAuth.createResolver(async (root: any, {data}: { data: any }, {
+  updatePerson: CheckUserAuth.createResolver(async (root: any, {data}: { data: any }, {
     dataSources,
     req
   }: { dataSources: any, req: any }) => {
@@ -49,10 +49,10 @@ const UserMutation = {
   }),
 }
 const UserQuery = {
-  getCurrentUser: async (root:any, { data }:{data:any}, { dataSources }: {dataSources:{User:any}}) => {
+  getCurrentUser: CheckUserAuth.createResolver (async (root:any, { data }:{data:any}, { dataSources, req }: {dataSources:{User:any}, req: Request}) => {
     const { User } = dataSources;
-    return  await new User().getCurrentUser(data);
-  },
+    return  await new User().getCurrentUser(data, (req as any).user);
+  })
 };
 
 const UserSubscription = {
@@ -63,4 +63,4 @@ const UserSubscription = {
   },
 };
 
-export { UserMutation, UserSubscription };
+export { UserMutation,UserQuery, UserSubscription };
