@@ -56,8 +56,7 @@ export default class DefaultScripts {
 
   async addPluginList(){
     const plugin: number = await __Plugin.countDocuments()
-    let data:{name:string,url:string} = JSON.parse(defaultPlugins)
-
+    let data:{name:string,url:string} = defaultPlugins
     if (plugin > 0) return console.log('default plugin already inserted');
      await __Plugin.insertMany(data)
 
