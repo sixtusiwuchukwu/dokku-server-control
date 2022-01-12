@@ -1,0 +1,14 @@
+[
+  {
+    "name": "mongo",
+    "url": "https://github.com/dokku/dokku-mongo.git"
+  },
+  {
+    "name": "letsencrypt",
+    "url": "https://github.com/dokku/dokku-letsencrypt.git"
+  },
+  {
+    "name": "http-auth",
+    "url": "https://github.com/dokku/dokku-http-auth.git"
+  }
+]
