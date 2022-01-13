@@ -6,6 +6,7 @@ const UserTypes = gql`
         loginUser(email: String! password: String!): String!
         updatePerson(data:updatePersonInput):String!
         updatePassword(oldPassword:String!,newPassword:String!):String!
+        updateOne(oldPassword:String!,newPassword:String!):String!
     }
     extend type Query {
         getCurrentUser: User!
@@ -18,6 +19,12 @@ const UserTypes = gql`
         _id: ID!
         username: String!
         email: String!
+        phone: String!
+        firstName: String!
+        lastName: String!
+        permissions:[String!]!
+        blackListCommands:[String]
+        whiteListCommands:[String]
         allowedRoutes:[String!]!
         accountType: accountType!
     }

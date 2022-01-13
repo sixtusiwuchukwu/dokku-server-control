@@ -1,7 +1,7 @@
 import {model,Schema} from "mongoose"
-import {PluginsInterface} from "../../interfaces/databaseInterface/mongo";
+import {PluginInterface} from "../../interfaces/databaseInterface/mongo";
 
-const PluginSchema =  new Schema<PluginsInterface>({
+const PluginSchema =  new Schema<PluginInterface>({
     name:{
         type:String,
         trim:true,
@@ -21,4 +21,4 @@ const PluginSchema =  new Schema<PluginsInterface>({
 
 })
 
-export default  model<PluginsInterface>("plugin",PluginSchema)
+export default  model<PluginInterface>("plugin",PluginSchema)

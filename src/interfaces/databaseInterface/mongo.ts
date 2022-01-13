@@ -7,6 +7,12 @@ type GroupMembers = {
   permission:Array<string>
   memberId:string
 }
+
+export type PluginType = {
+  name:string
+  url:string
+  command:Array<string>
+}
 export interface GroupMember {
   permission:Array<string>
   memberId:string
@@ -78,11 +84,12 @@ export interface PermissionInterface {
   permission:string
 }
 
-export interface PluginsInterface {
+export interface PluginInterface {
   name:string
   url:string
   command:Array<string>
 }
+
 
 
 
