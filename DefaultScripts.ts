@@ -58,11 +58,11 @@ export default class DefaultScripts {
   }
 
   async addPluginList() {
-    const plugin: PluginType[] = await __Plugin.find({});
+    const plugin: Array<PluginType> = await __Plugin.find({});
 
-    let data: PluginType[] = defaultPlugins;
+    const data: Array<PluginType> = defaultPlugins;
 
-    let filtered: PluginType[] = data.filter((item) => {
+    const filtered: Array<PluginType> = data.filter((item) => {
       return plugin
         .map((plugin) => plugin.name)
         .filter((__, _, array) => !array.includes(item.name)).length;
