@@ -25,8 +25,7 @@ export const createResolver = (resolver: (parent: any, args: any, context: any, 
     throw new AuthenticationError('Not authenticated');
   }
 });
-export const CheckUserAuth = (requiresAuth as any).createResolver((parent: any, args: any, context: any) => {
-  // @ts-ignore
+export const checkUserAuth = (requiresAuth as any).createResolver((parent: any, args: any, context: any) => {
 
 });
 export const requiresAdmin = (requiresAuth as any).createResolver((parent: any, args: any, context: any) => {

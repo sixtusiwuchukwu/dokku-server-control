@@ -3,11 +3,11 @@ import {AuthenticationError, UserInputError} from "apollo-server-express";
 import __User from "../../models/user/user";
 import __Person from "../../models/user/person";
 import Base from "../../../base";
-import {signJWT} from "../../helper/utils.jwt";
+import {loggInUser, signJWT} from "../../helper/utils.jwt";
 
 class UserDatasource extends Base {
-  async getCurrentUser(req:any) {
-    return __User.findById(req.user._id, {username:1, email:1, code:1 })
+  async getCurrentUser(user:loggInUser) {
+    return __User.findById(user._id, {username:1, email:1, code:1 })
   }
 
   async addUser(data: IUser) {
