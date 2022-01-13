@@ -1,6 +1,7 @@
 import {
   UserMutation,
   UserSubscription,
+  UserQuery
 } from "./services/user/resolver";
 
 import {
@@ -26,7 +27,8 @@ const Mutation = {
 };
 const Query = {
   ...ServerQuery,
-  ...GroupQuery
+  ...GroupQuery,
+  ...UserQuery
 };
 const Subscription = {
   ...UserSubscription,
