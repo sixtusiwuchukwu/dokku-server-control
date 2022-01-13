@@ -7,7 +7,7 @@ import {loggInUser, signJWT} from "../../helper/utils.jwt";
 
 class UserDatasource extends Base {
   async getCurrentUser(user:loggInUser) {
-    return __User.findById(user._id, {username:1, email:1, code:1 })
+    return __User.findById(user._id, {username:1, email:1, code:1, accountType:1 })
   }
 
   async addUser(data: IUser) {
