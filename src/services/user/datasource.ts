@@ -33,7 +33,7 @@ class UserDatasource extends Base {
   }
 
   async updatePerson(data: Person, person: Person) {
-    const NotFound: string = "Unable to validation authenticated account";
+    const NotFound: string = "Unable to validate authenticated account";
     const user = await __User.findById({_id: person._id});
     if (!user) throw new AuthenticationError(NotFound)
 
