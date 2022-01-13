@@ -18,7 +18,6 @@ const UserTypes = gql`
         _id: ID!
         username: String!
         email: String!
-        phone: String!
         allowedRoutes:[String!]!
         accountType: accountType!
     }

@@ -3,18 +3,18 @@ import {AuthenticationError, UserInputError} from "apollo-server-express";
 import __User from "../../models/user/user";
 import __Person from "../../models/user/person";
 import Base from "../../../base";
-import {signJWT} from "../../helper/utils.jwt";
+import {loggInUser, signJWT} from "../../helper/utils.jwt";
 
 class UserDatasource extends Base {
-  async getCurrentUser(data: any) {
-    return "sd"
+  async getCurrentUser(user:loggInUser) {
+    return __User.findById(user._id, {username:1, email:1, code:1 })
   }
 
   async addUser(data: IUser) {
     await this.userValidation(data)
     const {email} = data;
     const user = await __User.findOne({email})
-    if (user) throw new UserInputError('email, already exist');
+    if (user) throw new UserInputError('Account already exist');
     const code = await this.getCodeNumber('uc', __User)
     const account = await __User.create({...data,username: data.email.split('@')[0], code})
     this.sendMail(account.email, "Welcome To DSPM", "welcome", {name: account.email.split('@')[0]})
@@ -25,7 +25,6 @@ class UserDatasource extends Base {
     const NotFound: string = "Invalid login credentials";
     const user = await __User.findOne({email});
     if (!user) throw new UserInputError(NotFound)
-
     const isPass = await (__User as any).comparePassword(user.password, password)
     if (!isPass) throw new UserInputError(NotFound);
 

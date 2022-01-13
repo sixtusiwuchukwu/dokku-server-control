@@ -18,14 +18,16 @@ export const createResolver = (resolver: (parent: any, args: any, context: any, 
   return baseResolver;
 };
 
-export const requiresAuth = createResolver(async (parent, args, context, info) => {
+ export const requiresAuth = createResolver(async (parent, args, context, info) => {
   let payLoad = {serviceName: info.fieldName, user: context?.req.user?._id}
   await Log(payLoad)
   if (!context?.req.user || !context?.req.user?._id) {
     throw new AuthenticationError('Not authenticated');
   }
 });
+export const checkUserAuth = (requiresAuth as any).createResolver((parent: any, args: any, context: any) => {
 
+});
 export const requiresAdmin = (requiresAuth as any).createResolver((parent: any, args: any, context: any) => {
   // @ts-ignore
   if (!context?.req.user?.isAdmin) {

@@ -49,7 +49,6 @@ export default class DefaultScripts {
       console.log('permission lists created')
     }
 
-
   }
 
   async addPluginList(){
