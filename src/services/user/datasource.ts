@@ -6,6 +6,8 @@ import Base from "../../../base";
 import {signJWT} from "../../helper/utils.jwt";
 import crypto from 'crypto'
 import loggedInInterface from "../../interfaces/AuthInterface";
+import {templateName} from "../../interfaces/enums";
+
 class UserDatasource extends Base {
   async getCurrentUser(user:loggedInInterface) {
     return __User.findById(user._id, {username:1, email:1, code:1, accountType:1 })
@@ -18,7 +20,7 @@ class UserDatasource extends Base {
     if (user) throw new UserInputError('Account already exist');
     const code = await this.getCodeNumber('uc', __User)
     const account = await __User.create({...data,username: data.email.split('@')[0], code})
-    this.sendMail(account.email, "Welcome To DSPM", "welcome", {name: account.email.split('@')[0]})
+    this.sendMail(account.email, "Welcome To DSPM", templateName.welcome, {name: account.email.split('@')[0]})
     return "Successfully created an Account"
   }
 
@@ -56,7 +58,8 @@ class UserDatasource extends Base {
     await (account as any).save()
     const url = `https://${host}/reset/${token}`
     const message = `You are receiving this because you (or someone else) have requested the reset of the password for your account is its you kindly or follow this link ${url} or click the button `
-    this.sendMail(account.email, "Reset your DSAPM password", "resetPassword", {message , url})
+    this.sendMail(account.email, "Reset your DSAPM password", templateName.resetPassword, {message , url})
+    return "Request sent kindly check your email"
   }
 
   async updatePassword({oldPassword, newPassword}: { oldPassword: string, newPassword: string }, account: loggedInInterface) {

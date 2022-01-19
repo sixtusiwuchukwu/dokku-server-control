@@ -1,15 +1,18 @@
 import * as fs from "fs";
-const  ejs = require("ejs")
-const { NodeSSH } = require("node-ssh");
-const ids = require('short-id');
 import dns from 'dns/promises'
 import {Model, ObjectId} from 'mongoose';
 import nodemailer from 'nodemailer'
 import {UserInputError} from "apollo-server-express";
-import {isDev, MAIL_HOST, MAIL_PASS, MAIL_PORT, MAIL_USER} from "./src/tools/config";
+import {MAIL_HOST, MAIL_PASS, MAIL_PORT, MAIL_USER} from "./src/tools/config";
 import __Log from "./src/models/logs/logs"
 import * as path from "path";
 import Validation from "./src/Validations/Validations";
+import {templateName} from "./src/interfaces/enums";
+import {emailTemplateInterface} from "./src/interfaces/BaseInterface/base";
+
+const  ejs = require("ejs")
+const { NodeSSH } = require("node-ssh");
+const ids = require('short-id');
 
 class Base extends Validation{
   async lookUp(host: string) {
@@ -32,24 +35,25 @@ class Base extends Validation{
     return nodemailer.createTransport(mailConfig as object);
   }
 
-   getTemplate(templateName: string, data:object) {
-    const selection: { invoice: string; activation: string; welcome: string } = {
+   getTemplate(templateName: templateName, data:object) {
+    const selection: emailTemplateInterface = {
       welcome: templateName === "welcome" && fs.readFileSync(  path.join(process.cwd() ,"src","utils","emailTemplate","welcome.ejs") ).toString(),
       activation : templateName === "activation" && fs.readFileSync( path.join(process.cwd(),"src","utils","emailTemplate","activation.ejs")  ).toString(),
       invoice : templateName === "invoice" && fs.readFileSync(path.join(process.cwd(),"src","utils","emailTemplate","invoice.ejs")).toString(),
+      resetPassword : templateName === "resetPassword" && fs.readFileSync(path.join(process.cwd(),"src","utils","emailTemplate","resetPassword.ejs")).toString(),
     }
-    if (!Object.keys(selection).includes(templateName)) throw new Error(`Unknown email template type expected one of ${JSON.stringify(Object.keys(selection))} but got ${templateName}`);
-    let template = ejs.compile((selection[templateName as keyof typeof selection]), {});
+    // if (!Object.keys(selection).includes(templateName)) throw new Error(`Unknown email template type expected one of ${JSON.stringify(Object.keys(selection))} but got ${templateName}`);
+    let template = ejs.compile((selection[templateName]), {});
     return template(data)
   }
 
 
-   sendMail(to: string, subject: string, TemplateName: string, data?: any, from?:string) {
+   sendMail(to: string, subject: string, TemplateName: templateName, data?: any, from?:string) {
     const info = {
       from: from ? from :  '"DSPMS" <no-reply@dspms.net>',
       to,
       subject: subject.toUpperCase(),
-      html: this.getTemplate(TemplateName.toLowerCase(), data),
+      html: this.getTemplate(TemplateName, data),
     };
 
      this.sendMailConfig().sendMail(info).then(info => {
