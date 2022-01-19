@@ -1,66 +1,63 @@
 import {serverPermit, requiresAuth, requiresAdmin} from "../../helper/permissions";
 import {IAddServerInterface,AddServerMemberInterface ,changeServerOwnershipInterface,importServerToGroupInterface} from "../../interfaces/DataSources/server";
+import datasource from "../../datasource";
+import {Request, Response} from "express";
+import serverControl from "./datasource";
+import loggedInInterface from "../../interfaces/AuthInterface";
 
 const MESSAGE_SENT : string= "MESSAGE_SENT";
 
 const ServerQuery = {
-  // @ts-ignore
-  listServers:  requiresAdmin.createResolver(async (root:any, data:any , { dataSources }:{dataSources: { ServerControl:any }}) => {
-    const { ServerControl } = dataSources;
+  listServers:  requiresAdmin.createResolver(async (root:any, data:any , { dataSources }:{ dataSources: typeof datasource, req: Request, res: Response }) => {
+    const ServerControl  = dataSources.ServerControl as typeof serverControl;
     return await new ServerControl().listServers(data);
   }),
 
-  // @ts-ignore
-  listUserServers:  requiresAuth.createResolver(async (root:any, data:any , { dataSources,req }:{dataSources: { ServerControl:any }}) => {
-    const { ServerControl } = dataSources;
-    return await new ServerControl().listUserServers(data,req.user);
+  listUserServers:  (requiresAuth as any).createResolver(async (root:any, data:any , { dataSources,req }:{ dataSources: typeof datasource, req: Request, res: Response }) => {
+    const _ServerControl  = dataSources.ServerControl as typeof serverControl;
+    const user = (req as any).user as loggedInInterface
+    return await new _ServerControl().listUserServers(data, user);
   }),
-  // @ts-ignore
-  listServerMembers:  requiresAuth.createResolver(async (root:any, {data}:any , { dataSources,req }:{dataSources: { ServerControl:any }}) => {
-    const { ServerControl } = dataSources;
-    return await new ServerControl().listServerMembers(data,req.user);
+  listServerMembers:  (requiresAuth as any).createResolver(async (root:any, {data}:any , { dataSources }:{ dataSources: typeof datasource, req: Request, res: Response }) => {
+    const ServerControl  = dataSources.ServerControl as typeof serverControl;
+    // const user = (req as any).user as loggedInInterface
+    return await new ServerControl().listServerMembers(data);
   }),
 };
 
-// @ts-ignore
 
 const ServerMutations = {
-// @ts-ignore
-  addServer: requiresAuth.createResolver(async (root:any, { data }:{data:IAddServerInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
-    const { ServerControl } = dataSources;
-
-    return await new ServerControl("d").addServer(data, req.user);
+  addServer: (requiresAuth as any).createResolver(async (root:any, { data }:{data:IAddServerInterface}, { dataSources, req }:{ dataSources: typeof datasource, req: Request, res: Response }) => {
+    const ServerControl  = dataSources.ServerControl as typeof serverControl;
+    const user = (req as any).user as loggedInInterface
+    return await new ServerControl().addServer(data, user);
   }),
 
-// @ts-ignore
-  addServerMember: serverPermit.createResolver(async (root:any, { data }:{data:AddServerMemberInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
-    const { ServerControl } = dataSources;
-
-    return await new ServerControl("d").addServerMember(data, req.user);
+  addServerMember: serverPermit.createResolver(async (root:any, { data }:{data:AddServerMemberInterface}, { dataSources, req }:{ dataSources: typeof datasource, req: Request, res: Response }) => {
+    const ServerControl  = dataSources.ServerControl as typeof serverControl;
+    const user = (req as any).user as loggedInInterface
+    return await new ServerControl().addServerMember(data, user);
   }),
-  // @ts-ignore
-  changeServerOwnership: serverPermit.createResolver(async (root:any, { data }:{data:changeServerOwnershipInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
-    const { ServerControl } = dataSources;
-
-    return await new ServerControl("d").changeServerOwnership(data,req.user);
+  changeServerOwnership: serverPermit.createResolver(async (root:any, { data }:{data:changeServerOwnershipInterface}, { dataSources, req }:{ dataSources: typeof datasource, req: Request, res: Response }) => {
+    const ServerControl  = dataSources.ServerControl as typeof serverControl;
+    const user = (req as any).user as loggedInInterface
+    return await new ServerControl().changeServerOwnership(data,user);
   }),
-  // @ts-ignore
-  importServerToGroup: requiresAuth.createResolver(async (root:any, { data }:{data:importServerToGroupInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
-    const { ServerControl } = dataSources;
+  importServerToGroup: (requiresAuth as any).createResolver(async (root:any, { data }:{data:importServerToGroupInterface}, { dataSources, req }:{ dataSources: typeof datasource, req: Request, res: Response }) => {
+    const ServerControl  = dataSources.ServerControl as typeof serverControl;
+    const user = (req as any).user as loggedInInterface
 
-    return await new ServerControl("d").importServerToGroup(data,req.user);
+    return await new ServerControl().importServerToGroup(data,user);
   }),
-  // @ts-ignore
-  deleteServer: serverPermit.createResolver(async (root:any,  data :{data:importServerToGroupInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
-    const { ServerControl } = dataSources;
-
-    return await new ServerControl("d").deleteServer(data,req.user);
+  deleteServer: serverPermit.createResolver(async (root:any,  data :{data:importServerToGroupInterface}, { dataSources, req }:{ dataSources: typeof datasource, req: Request, res: Response }) => {
+    const ServerControl = dataSources.ServerControl as typeof serverControl;
+    const user = (req as any).user as loggedInInterface
+    return await new ServerControl().deleteServer(data,user);
   }),
-  // @ts-ignore
-  removeServerMember: serverPermit.createResolver(async (root:any,  data :{data:removeServerMemberInterface}, { dataSources, req }:{dataSources:{ServerControl:any}}) => {
-    const { ServerControl } = dataSources;
-
-    return await new ServerControl("d").removeServerMember(data,req.user);
+  removeServerMember: serverPermit.createResolver(async (root:any,  data :{data:any}, { dataSources, req }:{ dataSources: typeof datasource, req: Request, res: Response }) => {
+    const ServerControl = dataSources.ServerControl as typeof serverControl;
+    const user = (req as any).user as loggedInInterface
+    return await new ServerControl().removeServerMember(data,user);
   }),
 
 
