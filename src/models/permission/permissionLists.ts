@@ -7,7 +7,8 @@ const PermissionLists = new Schema<PermissionInterface>({
     type: String,
     required: true,
     unique: true,
-    trim: true
+    trim: true,
+    index:true
   }
 
 }, {

@@ -4,11 +4,9 @@ import __PermissionList from "./src/models/permission/permissionLists";
 import __Plugin from "./src/models/plugin/plugin";
 import { defaultAdminAccount } from "./src/tools/config";
 import { FilteredList } from "./src/resolvers";
-// import  * as defaultPlugins from "./src/tools/defaultPlugins.json"
 const defaultPlugins = require("./src/tools/defaultPlugins.json");
 import Base from "./base";
 import { PluginType } from "./src/interfaces/databaseInterface/mongo";
-// const  {PluginType} = require ('src/interfaces/databaseInterface/mongo')
 
 export default class DefaultScripts {
   constructor() {
@@ -58,8 +56,8 @@ export default class DefaultScripts {
   }
 
   async addPluginList() {
-    const plugin: PluginType[] = await __Plugin.find({});
-
+    console.time("plugin");
+    const plugin: PluginType[] = await __Plugin.find({}, { name: 1, url: 1 });
     let data: PluginType[] = defaultPlugins;
 
     let filtered: PluginType[] = data.filter((item) => {
@@ -77,6 +75,6 @@ export default class DefaultScripts {
       await __Plugin.insertMany(filtered);
       console.log("Default Plugins updated");
     }
-
+    console.timeEnd("plugin");
   }
 }
