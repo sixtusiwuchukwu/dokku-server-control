@@ -39,6 +39,8 @@ export interface IUser {
   password: string
   code:string
   lastReset:Date
+  resetPasswordToken:string
+  resetPasswordExpires: Date
   username: string
   accountType: accountType
   createdAt: Date

@@ -26,11 +26,7 @@ u26I7wDZMeIDvchBMP3xGwJAZxqRTrm6P0gUPqTWcZc8Od8m9tA7gkAyyFdVFz4m
 eVlxG6rHyQaAcR59uQIDAQAB
 -----END PUBLIC KEY-----
 `
-export interface loggInUser  {
-  _id: ObjectId,
-  email: string,
-  username: string
-}
+
 export const signJWT = (payload: object, expiresIn: string | number, refreshExpiresIn?: string | number) => {
   const newPayloadData = (payload as any)
    const newToken = jwt.sign({...newPayloadData, lastReset: undefined}, privateKey, {expiresIn, algorithm:'RS256'})
