@@ -3,10 +3,11 @@ import {AuthenticationError, UserInputError} from "apollo-server-express";
 import __User from "../../models/user/user";
 import __Person from "../../models/user/person";
 import Base from "../../../base";
-import {loggInUser, signJWT} from "../../helper/utils.jwt";
-
+import {signJWT} from "../../helper/utils.jwt";
+import crypto from 'crypto'
+import loggedInInterface from "../../interfaces/AuthInterface";
 class UserDatasource extends Base {
-  async getCurrentUser(user:loggInUser) {
+  async getCurrentUser(user:loggedInInterface) {
     return __User.findById(user._id, {username:1, email:1, code:1, accountType:1 })
   }
 
@@ -31,9 +32,9 @@ class UserDatasource extends Base {
     return signJWT({lastReset: user.lastReset, username: user.username, email: user.email, _id: user._id}, '5s', "1h");
   }
 
-  async updatePerson(data: Person, person: Person) {
+  async updatePerson(data: Person, account: loggedInInterface) {
     const NotFound: string = "Unable to validation authenticated account";
-    const user = await __User.findById({_id: person._id});
+    const user = await __User.findById({_id: account._id});
     if (!user) throw new AuthenticationError(NotFound)
 
     let foundPerson = await __Person.findOne({user: user._id});
@@ -46,11 +47,22 @@ class UserDatasource extends Base {
 
     return "updates successful"
   }
+  async forgotPassword(email:string, host: string) {
+    const account:IUser = await __User.findOne({email});
+    if(!account) throw new UserInputError('Email not registered with us')
+    const token = crypto.randomBytes(20).toString('hex');
+    account.resetPasswordToken = token;
+    account.resetPasswordExpires = new Date(Date.now() + 3600000) ;
+    await (account as any).save()
+    const url = `https://${host}/reset/${token}`
+    const message = `You are receiving this because you (or someone else) have requested the reset of the password for your account is its you kindly or follow this link ${url} or click the button `
+    this.sendMail(account.email, "Reset your DSAPM password", "resetPassword", {message , url})
+  }
 
-  async updatePassword({oldPassword, newPassword}: { oldPassword: string, newPassword: string }, person: Person) {
-    const NotFound: string = "User not found";
+  async updatePassword({oldPassword, newPassword}: { oldPassword: string, newPassword: string }, account: loggedInInterface) {
+    const NotFound: string = "Unable to validate account";
 
-    const user = await __User.findById({_id: person._id});
+    const user:IUser = await __User.findById({_id: account._id});
     if (!user) throw new UserInputError(NotFound)
 
     let isPassword = await (__User as any).comparePassword(user.password, oldPassword)
@@ -58,10 +70,11 @@ class UserDatasource extends Base {
 
     user.password = newPassword
 
-    await user.save()
+    await (user as any).save()
 
     return "updates successful"
   }
-}
 
+
+}
 export default UserDatasource;

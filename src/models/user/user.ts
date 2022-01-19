@@ -12,6 +12,8 @@ const UserSchema = new Schema<IUser>({
     type: String,
     unique: true
   },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
   username: {
     type: String,
     required: true,

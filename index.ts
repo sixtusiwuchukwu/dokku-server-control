@@ -14,6 +14,7 @@ import cookieParser from 'cookie-parser'
 
 import {MONGO_URL, DOKKU_MONGO_AQUA_URL, isDev} from "./src/tools/config";
 import includeUser from "./src/helper/IncludeUser";
+import {log} from "util";
 const devOrigins:Array<string> = ["http://localhost:4000"]
 const Origins:Array<string> = [""]
 if(isDev) {
