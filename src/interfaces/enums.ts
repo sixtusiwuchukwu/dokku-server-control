@@ -3,4 +3,5 @@ export enum templateName {
   activation = "activation",
   invoice = "invoice",
   resetPassword="resetPassword",
+  updatePassword="updatePassword",
 }
