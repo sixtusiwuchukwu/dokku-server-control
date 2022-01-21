@@ -27,7 +27,16 @@ const UserSchema = new Schema<IUser>({
         type: String,
         unique: true,
         index: true
-    }
+    },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+  
 }, {
     timestamps: true
 });

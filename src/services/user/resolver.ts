@@ -3,6 +3,10 @@ import {Request, Response} from "express";
 import {cookieOptions} from "../../tools/config";
 import {createResolver, requiresAuth, serverPermit} from "../../helper/permissions"
 import Base from "../../../base"
+import UserDatasource from "./datasource";
+import datasource from "../../datasource";
+import loggedInInterface from "../../interfaces/AuthInterface";
+import {ObjectId} from "mongoose";
 const Log = new Base().Log
 const pubsub = new PubSub();
 
@@ -23,14 +27,25 @@ const UserMutation = {
     //@ts-ignore
     return 'login completed'
   }),
-  // @ts-ignore
-  updatePerson: requiresAuth.createResolver(async (root: any, {data}: { data: any }, {
-    dataSources,
-    req
-  }: { dataSources: any, req: any }) => {
-    const {User} = dataSources;
-    const {user} = req
-
+  forgotPassword:async (parent: any, data: any, {dataSources,req,res}: { dataSources: typeof datasource, req: Request, res: Response }, info: any)=> {
+    const User = (dataSources.User as typeof UserDatasource);
+    const userId:any = await new User().forgotPassword(data.email, req.headers.origin)
+    let payLoad = {serviceName: info.fieldName, user:userId,ip:req.headers['user-agent']}
+    await Log(payLoad)
+    return 'Request completed'
+  },
+  resetPassword:async (parent: any, data: any, {dataSources,req,res}: { dataSources: typeof datasource, req: Request, res: Response }, info: any)=> {
+    const User = dataSources.User as typeof UserDatasource;
+    const [accessToken, refreshAccessToken, userId]: Array<string | ObjectId> = await new User().resetPassword(data, req.headers.origin)
+    res.cookie('x-token', accessToken, cookieOptions)
+    res.cookie('x-refresh-token', refreshAccessToken, cookieOptions)
+    let payLoad = {serviceName: info.fieldName, user: userId as ObjectId,ip:req.headers['user-agent']}
+    await Log(payLoad)
+    return 'login and password update completed'
+  },
+  updatePerson: (requiresAuth as any).createResolver(async (root: any, {data}: { data: any }, { dataSources, req}: { dataSources: typeof datasource, req: Request }) => {
+    const User = dataSources.User as typeof UserDatasource;
+    const user = (req as any).user as loggedInInterface
     return await new User().updatePerson(data,user)
 
 
@@ -47,6 +62,12 @@ const UserMutation = {
 
 
   }),
+  logout: (requiresAuth as any).createResolver(async (root: any, data: { oldPassword: string, newPassword: string }, {res}: {  res: Response }) => {
+    res.clearCookie('x-token', cookieOptions)
+    res.clearCookie('x-refresh-token', cookieOptions)
+    return "logout successful";
+  }),
+
 }
 const UserQuery = {
   getCurrentUser: async (root:any, { data }:{data:any}, { dataSources }: {dataSources:{User:any}}) => {

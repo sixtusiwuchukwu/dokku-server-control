@@ -26,11 +26,10 @@ eVlxG6rHyQaAcR59uQIDAQAB
 -----END PUBLIC KEY-----
 `
 
-export const signJWT = (payload: object, expiresIn: string | number, refreshExpiresIn?: string | number) => {
+export const signJWT = (payload: object, expiresIn: string | number, refreshExpiresIn?: string | number):Array<string> => {
   const newPayloadData = (payload as any)
    const newToken = jwt.sign({...newPayloadData, lastReset: undefined}, privateKey, {expiresIn, algorithm:'RS256'})
-   // @ts-ignore
-  const newRefreshToken =  jwt.sign({_id: payload._id, integrity:payload.lastReset}, privateKey, {expiresIn:refreshExpiresIn||expiresIn, algorithm:'RS256'})
+  const newRefreshToken =  jwt.sign({_id: (payload as any)._id, integrity:(payload as any).lastReset}, privateKey, {expiresIn:refreshExpiresIn||expiresIn, algorithm:'RS256'})
   return [newToken, newRefreshToken]
 }
 export const refreshTokens = async (token:string, refreshToken:string) => {

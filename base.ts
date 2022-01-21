@@ -37,6 +37,11 @@ class Base extends Validation{
       welcome: templateName === "welcome" && fs.readFileSync(  path.join(process.cwd() ,"src","utils","emailTemplate","welcome.ejs") ).toString(),
       activation : templateName === "activation" && fs.readFileSync( path.join(process.cwd(),"src","utils","emailTemplate","activation.ejs")  ).toString(),
       invoice : templateName === "invoice" && fs.readFileSync(path.join(process.cwd(),"src","utils","emailTemplate","invoice.ejs")).toString(),
+<<<<<<< HEAD
+=======
+      resetPassword : templateName === "resetPassword" && fs.readFileSync(path.join(process.cwd(),"src","utils","emailTemplate","resetPassword.ejs")).toString(),
+      updatePassword : templateName === "updatePassword" && fs.readFileSync(path.join(process.cwd(),"src","utils","emailTemplate","updatePassword.ejs")).toString(),
+>>>>>>> 55c199482e0ee2aab6affa4984b6fdb1f8d7bf3b
     }
     if (!Object.keys(selection).includes(templateName)) throw new Error(`Unknown email template type expected one of ${JSON.stringify(Object.keys(selection))} but got ${templateName}`);
     let template = ejs.compile((selection[templateName as keyof typeof selection]), {});
