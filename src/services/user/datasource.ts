@@ -37,7 +37,7 @@ class UserDatasource extends Base {
     return signJWT({lastReset: user.lastReset, username: user.username, email: user.email, _id: user._id}, '5s', "1h");
   }
 
-  async updatePerson(data: Person, person: Person) {
+  async updatePerson(data: Person, person: loggedInInterface) {
     const NotFound: string = "Unable to validate authenticated account";
     const user = await __User.findById({_id: person._id});
     if (!user) throw new AuthenticationError(NotFound)
